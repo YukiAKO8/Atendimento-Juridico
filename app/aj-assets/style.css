@@ -1,0 +1,123 @@
+/* Estilos simples para alinhar os campos em linha */
+.form-row {
+    display: flex;
+    gap: 20px; /* Espaço entre os campos */
+    margin-bottom: 15px;
+}
+.form-group {
+    flex: 1; /* Faz com que cada campo ocupe o mesmo espaço */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Classe específica para o campo de Status */
+.form-group-status {
+    flex: 0.5; /* Define uma largura proporcional menor que os outros campos */
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    flex: 1; /* Faz o campo crescer para preencher o espaço vertical */
+    box-sizing: border-box; /* Garante que o padding não aumente o tamanho total */
+    height: 38px; /* Define uma altura fixa para consistência visual */
+}
+
+/* 
+ * Garante que a altura do select sobrescreva os padrões do WordPress, 
+ * mesmo que a regra acima não seja suficiente.
+*/
+.aj-form-container select { 
+    height: 38px; 
+    max-width: none; /* Remove a largura máxima imposta pelo WordPress */
+}
+
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box; /* Garante que padding não aumente a altura total */
+    height: 45px;
+    border: 1px solid #7e8993;
+    border-radius: 3px;
+    background-color: #f0f0f1;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    padding-left: 8px;
+}
+.form-group-checkbox.aj-checked {
+    background-color: #d7f8df; /* Verde claro para indicar 'Sim' */
+    border-color: #007c00;
+}
+.form-group-checkbox input[type="checkbox"] {
+    display: none; /* Esconde o checkbox original */
+}
+.aj-form-container {
+    background-color: #fff;
+    padding: 25px;
+    margin-top: 40px;
+    border-radius: 10px;
+}
+
+/* Estilos da barra de navegação por abas */
+.aj-nav-tab-wrapper {
+    /* O espaçamento agora é controlado pelo padding do container abaixo */
+    padding-left: 10px; 
+    position: relative; /* Permite ajustar a posição da barra inteira */
+    /* Exemplo: para mover a barra 3px para cima, use: top: -3px; */
+}
+
+.aj-nav-tab-wrapper .nav-tab {
+    display: inline-block;
+    padding: 8px 15px;
+    text-decoration: none;
+    color: #2c3338; /* Cor de texto padrão do WordPress para melhor legibilidade */
+    border: none;
+    background-color: #d8d8d8;
+    border-radius: 3px 3px 0 0;
+}
+
+.aj-nav-tab-wrapper .nav-tab:hover {
+    color: #fff;
+    background-color: #007cba; /* Azul do WordPress no hover */
+}
+
+.aj-nav-tab-wrapper .nav-tab-active {
+    background-color: #007cba; /* Azul do WordPress para a aba ativa */
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Estilos para a área de upload de documentos */
+.aj-upload-area {
+    border: 2px dashed #a0a5aa;
+    border-radius: 4px;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.aj-upload-area:hover {
+    background-color: #f1f1f1;
+    border-color: #007cba;
+}
+
+.aj-upload-button {
+    background-color: #007cba;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
