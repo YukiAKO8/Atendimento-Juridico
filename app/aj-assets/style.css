@@ -1,18 +1,18 @@
-/* Estilos simples para alinhar os campos em linha */
+
 .form-row {
     display: flex;
-    gap: 20px; /* Espaço entre os campos */
+    gap: 20px; 
     margin-bottom: 15px;
 }
 .form-group {
-    flex: 1; /* Faz com que cada campo ocupe o mesmo espaço */
+    flex: 1; 
     display: flex;
     flex-direction: column;
 }
 
-/* Classe específica para o campo de Status */
+
 .form-group-status {
-    flex: 0.5; /* Define uma largura proporcional menor que os outros campos */
+    flex: 0.5; 
 }
 
 .form-group label {
@@ -24,18 +24,15 @@
 .form-group textarea {
     width: 100%;
     padding: 8px;
-    flex: 1; /* Faz o campo crescer para preencher o espaço vertical */
-    box-sizing: border-box; /* Garante que o padding não aumente o tamanho total */
-    height: 38px; /* Define uma altura fixa para consistência visual */
+    flex: 1; 
+    box-sizing: border-box; 
+    height: 38px; 
 }
 
-/* 
- * Garante que a altura do select sobrescreva os padrões do WordPress, 
- * mesmo que a regra acima não seja suficiente.
-*/
+
 .aj-form-container select { 
     height: 38px; 
-    max-width: none; /* Remove a largura máxima imposta pelo WordPress */
+    max-width: none; 
 }
 
 
@@ -43,7 +40,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    box-sizing: border-box; /* Garante que padding não aumente a altura total */
+    box-sizing: border-box; 
     height: 45px;
     border: 1px solid #7e8993;
     border-radius: 3px;
@@ -53,11 +50,11 @@
     padding-left: 8px;
 }
 .form-group-checkbox.aj-checked {
-    background-color: #d7f8df; /* Verde claro para indicar 'Sim' */
+    background-color: #d7f8df;
     border-color: #007c00;
 }
 .form-group-checkbox input[type="checkbox"] {
-    display: none; /* Esconde o checkbox original */
+    display: none; 
 }
 .aj-form-container {
     background-color: #fff;
@@ -66,19 +63,19 @@
     border-radius: 10px;
 }
 
-/* Estilos da barra de navegação por abas */
+
 .aj-nav-tab-wrapper {
-    /* O espaçamento agora é controlado pelo padding do container abaixo */
+    
     padding-left: 10px; 
-    position: relative; /* Permite ajustar a posição da barra inteira */
-    /* Exemplo: para mover a barra 3px para cima, use: top: -3px; */
+    position: relative; 
+    cursor: pointer;
 }
 
 .aj-nav-tab-wrapper .nav-tab {
     display: inline-block;
     padding: 8px 15px;
     text-decoration: none;
-    color: #2c3338; /* Cor de texto padrão do WordPress para melhor legibilidade */
+    color: #2c3338; 
     border: none;
     background-color: #d8d8d8;
     border-radius: 3px 3px 0 0;
@@ -86,16 +83,26 @@
 
 .aj-nav-tab-wrapper .nav-tab:hover {
     color: #fff;
-    background-color: #007cba; /* Azul do WordPress no hover */
+    background-color: #007cba; 
 }
 
 .aj-nav-tab-wrapper .nav-tab-active {
-    background-color: #007cba; /* Azul do WordPress para a aba ativa */
+    background-color: #007cba; 
     color: #fff;
     font-weight: bold;
 }
 
-/* Estilos para a área de upload de documentos */
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+
 .aj-upload-area {
     border: 2px dashed #a0a5aa;
     border-radius: 4px;
@@ -120,4 +127,181 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
+}
+
+
+.aj-meta-container {
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    padding: 15px 25px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.aj-meta-container p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+}
+
+
+.form-actions {
+    display: flex;
+    gap: 10px; 
+    margin-top: 0; 
+    justify-content: flex-end; 
+}
+
+.form-actions .button {
+    padding: 8px 15px;
+    display: inline-flex; 
+    align-items: center;
+    gap: 5px; 
+    border-radius: 5px; 
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.1s; 
+}
+
+.form-actions .dashicons {
+
+}
+
+
+.form-actions .aj-btn-salvar {
+    background-color: #28a745; 
+    border-color: #28a745;
+    color: #fff;
+}
+.form-actions .aj-btn-salvar:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    color: #fff; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+}
+
+.form-actions .aj-btn-limpar {
+    background-color: #005a9c;
+    border-color: #005a9c;
+    color: #fff;
+}
+.form-actions .aj-btn-limpar:hover {
+    background-color: #004a80;
+    border-color: #00406d;
+    color: #fff; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.form-actions .aj-btn-cancelar {
+    background-color: #d9534f; 
+    border-color: #d9534f;
+    color: #fff;
+}
+.form-actions .aj-btn-cancelar:hover {
+    background-color: #c9302c;
+    border-color: #ac2925;
+    color: #fff; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+.aj-container-acoes {
+    position: relative;
+    display: inline-block;
+}
+
+.aj-actions-button {
+    background: transparent;
+    border: 1px solid #c3c4c7;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: #50575e;
+}
+.aj-actions-button:hover {
+    background: #f0f0f1;
+    border-color: #007cba;
+    color: #007cba;
+}
+
+.aj-actions-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    z-index: 100;
+    min-width: 180px;
+    padding: 5px 0;
+}
+
+.aj-dropdown-acoes ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.aj-actions-dropdown li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    text-decoration: none;
+    color: #1d2327;
+    white-space: nowrap;
+}
+.aj-actions-dropdown li a .dashicons-arrow-left-alt2 {
+    margin-left: auto; 
+    color: #787c82;
+    transform: rotate(180deg); 
+    font-size: 18px;
+}
+
+
+.aj-actions-dropdown li a:hover {
+    background-color: #f0f0f1;
+}
+
+.aj-submenu-container {
+    position: relative;
+}
+.aj-submenu-container .dashicons {
+ font-size: 16px;
+ 
+}
+.aj-actions-submenu {
+    display: none;
+    position: absolute;
+    right: 100%;
+    top: -5px; /* Alinha com o item pai */
+    background-color: white;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    min-width: 120px;
+    padding: 5px 0;
+}
+.aj-submenu-container:hover .aj-actions-submenu {
+    display: block;
+}
+
+
+.wp-list-table .column-id,
+.wp-list-table .column-actions {
+    width: 5%;
+}
+
+
+.aj-acao-excluir {
+    color: #d63638 !important; 
+}
+
+.aj-acao-excluir:hover {
+    color: #fff !important;
+    background-color: #d63638 !important;
 }

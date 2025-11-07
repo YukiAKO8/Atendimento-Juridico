@@ -21,7 +21,10 @@ if ( ! defined( 'WPINC' ) ) {
  * O código que é executado durante a ativação do plugin.
  */
 function activate_atendimento_juridico() {
-	// Coloque seu código de ativação aqui.
+    // Inclui o arquivo de banco de dados para ter acesso à função de criação da tabela.
+	require_once plugin_dir_path( __FILE__ ) . 'utils/aj-db.php';
+    // Chama a função que cria a tabela no banco de dados.
+    aj_criar_tabela_atendimentos();
 }
 register_activation_hook( __FILE__, 'activate_atendimento_juridico' );
 
@@ -29,7 +32,9 @@ register_activation_hook( __FILE__, 'activate_atendimento_juridico' );
  * O código que é executado durante a desativação do plugin.
  */
 function deactivate_atendimento_juridico() {
-	// Coloque seu código de desativação aqui.
+    // Opcional: Se você quiser remover a tabela ao desativar, descomente a linha abaixo
+    // e a função 'aj_remover_tabela_atendimentos' no arquivo aj-db.php.
+    // aj_remover_tabela_atendimentos();
 }
 register_deactivation_hook( __FILE__, 'deactivate_atendimento_juridico' );
 
@@ -68,13 +73,12 @@ function aj_atendimento_juridico_page_content() {
  * Enfileira os estilos necessários para o painel de administração.
  */
 function aj_atendimento_juridico_enqueue_admin_assets($hook) {
-    // O $hook é o sufixo da página de admin. Para nossa página, será 'toplevel_page_atendimento-juridico'.
-    // Isso garante que os scripts e estilos só sejam carregados na página do nosso plugin.
+    
     if ( 'toplevel_page_atendimento-juridico' != $hook ) {
         return;
     }
 
-    // Enfileira o arquivo CSS
+    
     wp_enqueue_style(
         'aj-atendimento-juridico-style',
         plugin_dir_url( __FILE__ ) . 'app/aj-assets/style.css',
@@ -82,13 +86,13 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         '1.0.0'
     );
 
-    // Enfileira o arquivo JavaScript
+    
     wp_enqueue_script(
         'aj-atendimento-juridico-main-script',
         plugin_dir_url( __FILE__ ) . 'app/aj-ajax/aj-admin-main.js',
-        array('jquery'), // Dependência do jQuery
+        array('jquery'), 
         '1.0.0',
-        true // Carrega o script no rodapé
+        true 
     );
 }
 add_action( 'admin_enqueue_scripts', 'aj_atendimento_juridico_enqueue_admin_assets' );

@@ -3,113 +3,109 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// A variável $atendimento é definida no controller (aj-controller.php) quando estamos editando.
+$socios = isset( $atendimento->socios ) ? $atendimento->socios : '';
+$data_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'Y-m-d', strtotime( $atendimento->data_atendimento ) ) : '';
+$hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', strtotime( $atendimento->data_atendimento ) ) : '';
 ?>
-<div class="wrap">
-    <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-
-    <div class="aj-form-container">
-        <form id="aj-atendimento-form" method="post">
-            <!-- Linha 1: Sócios, Situação, Empresa -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="aj_socios">Sócios *</label>
-                    <input type="text" id="aj_socios" name="aj_socios" required>
-                </div>
-                <div class="form-group">
-                    <label for="aj_situacao">Situação</label>
-                    <input type="text" id="aj_situacao" name="aj_situacao">
-                </div>
-                <div class="form-group">
-                    <label for="aj_empresa">Empresa</label>
-                    <input type="text" id="aj_empresa" name="aj_empresa">
-                </div>
-            </div>
-
-            <!-- Linha 2: Função, Advogados, Tipo de atendimento -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="aj_funcao">Função</label>
-                    <input type="text" id="aj_funcao" name="aj_funcao">
-                </div>
-                <div class="form-group">
-                    <label for="aj_advogados">Advogados *</label>
-                    <input type="text" id="aj_advogados" name="aj_advogados" required>
-                </div>
-                <div class="form-group">
-                    <label for="aj_tipo_atendimento">Tipo de atendimento *</label>
-                    <select id="aj_tipo_atendimento" name="aj_tipo_atendimento" required>
-                        <option value="">-- Selecione --</option>
-                        <option value="AEROPORTOS">AEROPORTOS</option>
-                        <option value="AII">AII</option>
-                        <option value="ANDAMENTO PROCESSUAL">ANDAMENTO PROCESSUAL</option>
-                        <option value="DECLARACAO DE ASSOCIACAO">DECLARAÇÃO DE ASSOCIAÇÃO</option>
-                        <option value="DEMANDAS ANAC">DEMANDAS ANAC</option>
-                        <option value="DEMANDAS INSS">DEMANDAS INSS</option>
-                        <option value="DENUNCIA">DENÚNCIA</option>
-                        <option value="DUVIDAS RESCISAO">DÚVIDAS RESCISÃO</option>
-                        <option value="EMISSAO PPP">EMISSÃO PPP</option>
-                        <option value="OUTROS">OUTROS</option>
-                        <option value="PASSE LIVRE">PASSE LIVRE</option>
-                        <option value="PLANEJAMENTO PREVIDENCIARIO">PLANEJAMENTO PREVIDENCIÁRIO</option>
-                        <option value="REGULAMENTACAO">REGULAMENTAÇÃO</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Linha 3: Forma de atendimento, Status, Assunto do atendimento -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="aj_forma_atendimento">Forma de atendimento *</label>
-                    <select id="aj_forma_atendimento" name="aj_forma_atendimento" required>
-                        <option value="">-- Selecione --</option>
-                        <option value="PRESENCIAL">PRESENCIAL</option>
-                        <option value="TELEFONE">TELEFONE</option>
-                        <option value="VIDEOCHAMADA">VIDEOCHAMADA</option>
-                        <option value="E-MAIL">E-MAIL</option>
-                        <option value="WHATSAPP">WHATSAPP</option>
-                    </select>
-                </div>
-                <div class="form-group form-group-status">
-                    <label for="aj_status">Status *</label>
-                    <select id="aj_status" name="aj_status" required>
-                        <option value="">-- Selecione --</option>
-                        <option value="AGUARDANDO">AGUARDANDO</option>
-                        <option value="PENDENTE">PENDENTE</option>
-                        <option value="CANCELADO">CANCELADO</option>
-                        <option value="ATENDIDO">ATENDIDO</option>
-                        <option value="INDEFERIDO">INDEFERIDO</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="aj_assunto">Assunto do atendimento *</label>
-                    <textarea id="aj_assunto" name="aj_assunto" rows="1" required></textarea>
-                </div>
-            </div>
-
-            <!-- Linha 4: Nº protocolo, Entrada de processo?, Data e Hora -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="aj_protocolo">Nº protocolo</label>
-                    <input type="text" id="aj_protocolo" name="aj_protocolo">
-                </div>
-                <div class="form-group">
-                    <label>Entrada de processo?</label>
-                    <div class="form-group-checkbox" tabindex="0">
-                        <input type="checkbox" id="aj_entrada_processo" name="aj_entrada_processo" value="1">
-                        <span>Não</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="aj_data_atendimento">Data do atendimento *</label>
-                    <input type="date" id="aj_data_atendimento" name="aj_data_atendimento" required>
-                </div>
-                <div class="form-group">
-                    <label for="aj_hora_atendimento">Hora do atendimento *</label>
-                    <input type="time" id="aj_hora_atendimento" name="aj_hora_atendimento" required>
-                </div>
-            </div>
-
-            <?php submit_button('Salvar Atendimento'); ?>
-        </form>
+<h2>Editando Dados</h2>
+    <!-- Linha 1: Sócios, Situação, Empresa -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="aj_socios">Sócios *</label>
+            <input type="text" id="aj_socios" name="aj_socios" value="<?php echo esc_attr( $socios ); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="aj_situacao">Situação</label>
+            <input type="text" id="aj_situacao" name="aj_situacao" value="<?php echo isset( $atendimento->situacao ) ? esc_attr( $atendimento->situacao ) : ''; ?>">
+        </div>
+        <div class="form-group">
+            <label for="aj_empresa">Empresa</label>
+            <input type="text" id="aj_empresa" name="aj_empresa" value="<?php echo isset( $atendimento->empresa ) ? esc_attr( $atendimento->empresa ) : ''; ?>">
+        </div>
     </div>
-</div>
+
+    <!-- Linha 2: Função, Advogados, Tipo de atendimento -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="aj_funcao">Função</label>
+            <input type="text" id="aj_funcao" name="aj_funcao" value="<?php echo isset( $atendimento->funcao ) ? esc_attr( $atendimento->funcao ) : ''; ?>">
+        </div>
+        <div class="form-group">
+            <label for="aj_advogados">Advogados *</label>
+            <input type="text" id="aj_advogados" name="aj_advogados" value="<?php echo isset( $atendimento->advogados ) ? esc_attr( $atendimento->advogados ) : ''; ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="aj_tipo_atendimento">Tipo de atendimento *</label>
+            <select id="aj_tipo_atendimento" name="aj_tipo_atendimento" required>
+                <option value="">-- Selecione --</option>
+                <option value="AEROPORTOS" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'AEROPORTOS' ); ?>>AEROPORTOS</option>
+                <option value="AII" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'AII' ); ?>>AII</option>
+                <option value="ANDAMENTO PROCESSUAL" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'ANDAMENTO PROCESSUAL' ); ?>>ANDAMENTO PROCESSUAL</option>
+                <option value="DECLARACAO DE ASSOCIACAO" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'DECLARACAO DE ASSOCIACAO' ); ?>>DECLARAÇÃO DE ASSOCIAÇÃO</option>
+                <option value="DEMANDAS ANAC" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'DEMANDAS ANAC' ); ?>>DEMANDAS ANAC</option>
+                <option value="DEMANDAS INSS" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'DEMANDAS INSS' ); ?>>DEMANDAS INSS</option>
+                <option value="DENUNCIA" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'DENUNCIA' ); ?>>DENÚNCIA</option>
+                <option value="DUVIDAS RESCISAO" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'DUVIDAS RESCISAO' ); ?>>DÚVIDAS RESCISÃO</option>
+                <option value="EMISSAO PPP" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'EMISSAO PPP' ); ?>>EMISSÃO PPP</option>
+                <option value="OUTROS" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'OUTROS' ); ?>>OUTROS</option>
+                <option value="PASSE LIVRE" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'PASSE LIVRE' ); ?>>PASSE LIVRE</option>
+                <option value="PLANEJAMENTO PREVIDENCIARIO" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'PLANEJAMENTO PREVIDENCIARIO' ); ?>>PLANEJAMENTO PREVIDENCIÁRIO</option>
+                <option value="REGULAMENTACAO" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'REGULAMENTACAO' ); ?>>REGULAMENTAÇÃO</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Linha 3: Forma de atendimento, Status, Assunto do atendimento -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="aj_forma_atendimento">Forma de atendimento *</label>
+            <select id="aj_forma_atendimento" name="aj_forma_atendimento" required>
+                <option value="">-- Selecione --</option>
+                <option value="PRESENCIAL" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'PRESENCIAL' ); ?>>PRESENCIAL</option>
+                <option value="TELEFONE" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'TELEFONE' ); ?>>TELEFONE</option>
+                <option value="VIDEOCHAMADA" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'VIDEOCHAMADA' ); ?>>VIDEOCHAMADA</option>
+                <option value="E-MAIL" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'E-MAIL' ); ?>>E-MAIL</option>
+                <option value="WHATSAPP" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'WHATSAPP' ); ?>>WHATSAPP</option>
+            </select>
+        </div>
+        <div class="form-group form-group-status">
+            <label for="aj_status">Status *</label>
+            <select id="aj_status" name="aj_status" required>
+                <option value="">-- Selecione --</option>
+                <option value="AGUARDANDO" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'AGUARDANDO' ); ?>>AGUARDANDO</option>
+                <option value="PENDENTE" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'PENDENTE' ); ?>>PENDENTE</option>
+                <option value="CANCELADO" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'CANCELADO' ); ?>>CANCELADO</option>
+                <option value="ATENDIDO" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'ATENDIDO' ); ?>>ATENDIDO</option>
+                <option value="INDEFERIDO" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'INDEFERIDO' ); ?>>INDEFERIDO</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="aj_assunto">Assunto do atendimento *</label>
+            <textarea id="aj_assunto" name="aj_assunto" rows="1" required><?php echo isset( $atendimento->assunto ) ? esc_textarea( $atendimento->assunto ) : ''; ?></textarea>
+        </div>
+    </div>
+
+    <!-- Linha 4: Nº protocolo, Entrada de processo?, Data e Hora -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="aj_protocolo">Nº protocolo</label>
+            <input type="text" id="aj_protocolo" name="aj_protocolo" value="<?php echo isset( $atendimento->protocolo ) ? esc_attr( $atendimento->protocolo ) : ''; ?>">
+        </div>
+        <div class="form-group">
+            <label>Entrada de processo?</label>
+            <div class="form-group-checkbox" tabindex="0">
+                <input type="checkbox" id="aj_entrada_processo" name="aj_entrada_processo" value="1" <?php checked( isset( $atendimento->entrada_processo ) ? $atendimento->entrada_processo : 0, 1 ); ?>>
+                <span>Não</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="aj_data_atendimento">Data do atendimento *</label>
+            <input type="date" id="aj_data_atendimento" name="aj_data_atendimento" value="<?php echo esc_attr( $data_atendimento_val ); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="aj_hora_atendimento">Hora do atendimento *</label>
+            <input type="time" id="aj_hora_atendimento" name="aj_hora_atendimento" value="<?php echo esc_attr( $hora_atendimento_val ); ?>" required>
+        </div>
+    </div>
