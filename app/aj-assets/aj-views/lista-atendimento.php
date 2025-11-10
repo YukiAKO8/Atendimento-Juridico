@@ -7,10 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wpdb;
 $table_name = $wpdb->prefix . 'aj_atendimentos';
 
-// Busca todos os atendimentos ordenados pelo mais recente.
+
 $atendimentos = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY id DESC" );
 
-// URL para adicionar um novo atendimento.
+
 $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'new' ] );
 
 ?>
@@ -20,6 +20,7 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
 
     <hr class="wp-header-end">
 
+    <div class="aj-form-container"> <!-- Adicionando o container para o estilo -->
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
             <tr>
@@ -28,7 +29,7 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
                 <th scope="col" id="protocolo" class="manage-column column-protocolo">Protocolo</th>
                 <th scope="col" id="advogado" class="manage-column column-advogado">Advogado</th>
                 <th scope="col" id="socio" class="manage-column column-socio">Sócio</th>
-                <th scope="col" id="data" class="manage-column column-data">Data</th>
+                <th scope="col" id="data" class="manage-column column-data">Data e Hora</th>
                 <th scope="col" id="status" class="manage-column column-status">Status</th>
                 <th scope="col" id="actions" class="manage-column column-actions">Ações</th>
             </tr>
@@ -38,7 +39,7 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
             <?php if ( ! empty( $atendimentos ) ) : ?>
                 <?php foreach ( $atendimentos as $atendimento ) : ?>
                     <?php
-                        // URL para editar o atendimento atual.
+                     
                         $edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
                     ?>
                     <tr>
@@ -49,8 +50,14 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
                         <td class="protocolo column-protocolo"><?php echo esc_html( $atendimento->protocolo ); ?></td>
                         <td class="advogado column-advogado"><?php echo esc_html( $atendimento->advogados ); ?></td>
                         <td class="socio column-socio"><?php echo esc_html( $atendimento->socios ); ?></td>
-                        <td class="data column-data"><?php echo esc_html( date( 'd/m/Y', strtotime( $atendimento->data_atendimento ) ) ); ?></td>
-                        <td class="status column-status"><?php echo esc_html( $atendimento->status ); ?></td>
+                        <td class="data column-data"><?php echo esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_atendimento ) ) ); ?></td>
+                        <td class="status column-status">
+                            <?php
+                                $status = $atendimento->status;
+                                $status_class = 'aj-status-' . sanitize_html_class( strtolower( $status ) );
+                                echo '<span class="aj-status-badge ' . esc_attr( $status_class ) . '">' . esc_html( $status ) . '</span>';
+                            ?>
+                        </td>
                         <td class="actions column-actions">
                             <div class="aj-actions-container">
                                 <button class="aj-actions-button dashicons dashicons-ellipsis"></button>
@@ -102,4 +109,5 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
             <?php // Você pode copiar o conteúdo de <thead> aqui se desejar. ?>
         </tfoot>
     </table>
+    </div> <!-- Fim do .aj-form-container -->
 </div>

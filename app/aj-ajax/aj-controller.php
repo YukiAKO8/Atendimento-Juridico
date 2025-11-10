@@ -59,8 +59,17 @@ function aj_render_admin_page() {
         $current_user = wp_get_current_user();
         ?>
         <div class="wrap">
-            <h1><?php echo $atendimento_id > 0 ? 'Editar Atendimento' : 'Adicionar Novo Atendimento'; ?></h1>
-
+            <div class="aj-form-wrapper"> <!-- Container para centralização -->
+                <br>
+                <br>
+                <br>
+                <br>
+                <h1><?php echo $atendimento_id > 0 ? 'Editar Atendimento' : 'Adicionar Novo Atendimento'; ?></h1>
+                <br>
+                <br>
+                <br>
+                <br>
+    
             <form id="aj-main-form" method="post">
                 <?php wp_nonce_field( 'aj_salvar_atendimento', 'aj_atendimento_nonce' ); ?>
 
@@ -116,18 +125,26 @@ function aj_render_admin_page() {
 
             </div>
 
+<br>
+<br>
+
             <div class="form-actions">
                 <button type="reset" class="button aj-btn-limpar"><span class="dashicons dashicons-trash"></span>Limpar</button>
                 <a href="?page=atendimento-juridico" class="button aj-btn-cancelar"><span class="dashicons dashicons-no-alt"></span>Cancelar</a>
                 <button type="submit" name="submit" id="submit" class="button aj-btn-salvar"><span class="dashicons dashicons-yes-alt"></span>Salvar Atendimento</button>
             </div>
+<br>
+<br>
 
             </form>
+            </div> <!-- Fim do .aj-form-wrapper -->
         </div>
         <?php
     } else {
-     
+        // Adiciona o wrapper para centralizar a lista também
+        echo '<div class="aj-form-wrapper">';
         require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/lista-atendimento.php';
+        echo '</div>';
     }
 }
 

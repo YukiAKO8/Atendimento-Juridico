@@ -83,7 +83,7 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-style',
         plugin_dir_url( __FILE__ ) . 'app/aj-assets/style.css',
         array(),
-        '1.0.0'
+        '1.0.2' // Alteramos a versão para forçar a atualização do cache
     );
 
     
@@ -91,7 +91,7 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-main-script',
         plugin_dir_url( __FILE__ ) . 'app/aj-ajax/aj-admin-main.js',
         array('jquery'), 
-        '1.0.0',
+        '1.0.2', // Alteramos a versão para forçar a atualização do cache
         true 
     );
 }

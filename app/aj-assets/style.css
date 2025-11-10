@@ -58,38 +58,49 @@
 }
 .aj-form-container {
     background-color: #fff;
-    padding: 25px;
-    margin-top: 40px;
+    padding: 25px; /* Espaçamento interno para o conteúdo */
+    margin-top: 0; /* Remove margem superior para colar nas abas */
     border-radius: 10px;
+    border: 1px solid #c3c4c7;
+}
+
+/* Novo container para centralizar o formulário */
+.aj-form-wrapper {
+    max-width: 1600px; /* Define uma largura máxima */
+    margin: 40px auto 0 auto; /* 40px de margem no topo, e centraliza horizontalmente */
 }
 
 
 .aj-nav-tab-wrapper {
-    
-    padding-left: 10px; 
+    padding-left: 10px;
     position: relative; 
     cursor: pointer;
+    margin-bottom: -1px; /* Puxa o container para cima, sobrepondo as bordas */
+    z-index: 1; /* Garante que as abas fiquem na frente da borda do container */
 }
 
 .aj-nav-tab-wrapper .nav-tab {
     display: inline-block;
     padding: 8px 15px;
     text-decoration: none;
-    color: #2c3338; 
-    border: none;
-    background-color: #d8d8d8;
-    border-radius: 3px 3px 0 0;
+    color: #2c3338;
+    background-color: #f0f0f1;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 0;
+    border-bottom: none;
+        margin-top: -40px;
 }
 
 .aj-nav-tab-wrapper .nav-tab:hover {
-    color: #fff;
-    background-color: #007cba; 
+    background-color: #e0e0e0;
 }
 
 .aj-nav-tab-wrapper .nav-tab-active {
-    background-color: #007cba; 
-    color: #fff;
+    background-color: #fff; /* Fundo branco para conectar ao container */
+    color: #2c3338;
     font-weight: bold;
+    border-bottom: 1px solid #fff; /* "Apaga" a borda do container abaixo dela */
 }
 
 
@@ -205,7 +216,7 @@
 }
 
 
-.aj-container-acoes {
+.aj-actions-container {
     position: relative;
     display: inline-block;
 }
@@ -304,4 +315,69 @@
 .aj-acao-excluir:hover {
     color: #fff !important;
     background-color: #d63638 !important;
+}
+
+/* Ajustes para a tabela dentro do container branco */
+.aj-form-container .wp-list-table {
+    border: none;
+    background: transparent;
+}
+
+/* Estilo para o cabeçalho da tabela: fundo cinza e texto em negrito */
+.aj-form-container .wp-list-table thead th {
+    background-color: #f5f5f5; /* Cinza bem clarinho */
+    font-weight: bold;
+}
+
+/* Estilo para as linhas da tabela: fundo branco com separador cinza */ 
+.aj-form-container .wp-list-table.striped tbody tr {
+    background-color: #fff; /* Força o fundo branco em todas as linhas */
+    border-bottom: 3px solid #e0e0e0; /* Adiciona uma linha cinza mais visível como separador */
+    transition: background-color 0.15s ease-in-out; /* Adiciona transição suave para o hover */
+}
+
+.aj-form-container .wp-list-table.striped tbody tr:hover {
+    background-color: #f5f5f5; /* Cor de fundo suave ao passar o mouse */
+}
+
+.aj-form-container .wp-list-table.striped tbody tr:last-child { 
+    border-bottom: none; /* Remove a borda da última linha para um acabamento limpo */
+}
+
+/* Estilos para o status na lista de atendimentos */
+.aj-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Aguardando e Indeferido: fundo azul com letra branca */
+.aj-status-badge.aj-status-aguardando,
+.aj-status-badge.aj-status-indeferido {
+    background-color: #0073aa;
+    color: #fff;
+}
+
+/* Atendido: verde com letra branca */
+.aj-status-badge.aj-status-atendido {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Pendente: amarelo com letra preta */
+.aj-status-badge.aj-status-pendente {
+    background-color: #ffb900;
+    color: #000;
+}
+
+/* Cancelado: vermelho claro com letra preta */
+.aj-status-badge.aj-status-cancelado {
+    background-color: #f8d7da;
+    color: #721c24;
 }
