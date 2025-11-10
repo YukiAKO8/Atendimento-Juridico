@@ -83,7 +83,7 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-style',
         plugin_dir_url( __FILE__ ) . 'app/aj-assets/style.css',
         array(),
-        '1.0.2' // Alteramos a versão para forçar a atualização do cache
+        '1.0.3' // Alteramos a versão para forçar a atualização do cache
     );
 
     
@@ -91,8 +91,17 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-main-script',
         plugin_dir_url( __FILE__ ) . 'app/aj-ajax/aj-admin-main.js',
         array('jquery'), 
-        '1.0.2', // Alteramos a versão para forçar a atualização do cache
+        '1.0.3', // Alteramos a versão para forçar a atualização do cache
         true 
+    );
+
+    // Passa dados do PHP para o JavaScript, como o nonce para segurança AJAX
+    wp_localize_script(
+        'aj-atendimento-juridico-main-script',
+        'aj_object',
+        [
+            'nonce' => wp_create_nonce( 'aj_excluir_nonce' )
+        ]
     );
 }
 add_action( 'admin_enqueue_scripts', 'aj_atendimento_juridico_enqueue_admin_assets' );

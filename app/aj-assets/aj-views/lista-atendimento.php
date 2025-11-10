@@ -41,6 +41,7 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
                     <?php
                      
                         $edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
+                        $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ] );
                     ?>
                     <tr>
                         <td class="id column-id"><?php echo esc_html( $atendimento->id ); ?></td>
@@ -86,8 +87,8 @@ $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'n
                                             <div class="aj-actions-submenu">
                                                 <ul>
                                                     <li><a href="<?php echo esc_url( $edit_url ); ?>"><span class="dashicons dashicons-edit"></span> Editar</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-visibility"></span> Visualizar</a></li>
-                                                    <li><a href="#" class="aj-action-delete"><span class="dashicons dashicons-trash"></span> Excluir</a></li>
+                                                    <li><a href="<?php echo esc_url( $view_url ); ?>" class="aj-action-view"><span class="dashicons dashicons-visibility"></span> Visualizar</a></li>
+                                                    <li><a href="#" class="aj-action-delete" data-id="<?php echo esc_attr( $atendimento->id ); ?>"><span class="dashicons dashicons-trash"></span> Excluir</a></li>
                                                 </ul>
                                             </div>
                                         </li>

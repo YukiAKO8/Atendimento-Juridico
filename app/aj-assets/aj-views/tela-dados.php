@@ -1,44 +1,44 @@
 <?php
-// Prevenção de acesso direto ao arquivo.
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// A variável $atendimento é definida no controller (aj-controller.php) quando estamos editando.
+
 $socios = isset( $atendimento->socios ) ? $atendimento->socios : '';
 $data_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'Y-m-d', strtotime( $atendimento->data_atendimento ) ) : '';
 $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', strtotime( $atendimento->data_atendimento ) ) : '';
 ?>
 <h2>Editando Dados</h2>
-    <!-- Linha 1: Sócios, Situação, Empresa -->
+
     <div class="form-row">
         <div class="form-group">
             <label for="aj_socios">Sócios *</label>
-            <input type="text" id="aj_socios" name="aj_socios" value="<?php echo esc_attr( $socios ); ?>" required>
+            <input type="text" id="aj_socios" name="aj_socios" value="<?php echo esc_attr( $socios ); ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label for="aj_situacao">Situação</label>
-            <input type="text" id="aj_situacao" name="aj_situacao" value="<?php echo isset( $atendimento->situacao ) ? esc_attr( $atendimento->situacao ) : ''; ?>">
+            <input type="text" id="aj_situacao" name="aj_situacao" value="<?php echo isset( $atendimento->situacao ) ? esc_attr( $atendimento->situacao ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label for="aj_empresa">Empresa</label>
-            <input type="text" id="aj_empresa" name="aj_empresa" value="<?php echo isset( $atendimento->empresa ) ? esc_attr( $atendimento->empresa ) : ''; ?>">
+            <input type="text" id="aj_empresa" name="aj_empresa" value="<?php echo isset( $atendimento->empresa ) ? esc_attr( $atendimento->empresa ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
     </div>
 
-    <!-- Linha 2: Função, Advogados, Tipo de atendimento -->
+
     <div class="form-row">
         <div class="form-group">
             <label for="aj_funcao">Função</label>
-            <input type="text" id="aj_funcao" name="aj_funcao" value="<?php echo isset( $atendimento->funcao ) ? esc_attr( $atendimento->funcao ) : ''; ?>">
+            <input type="text" id="aj_funcao" name="aj_funcao" value="<?php echo isset( $atendimento->funcao ) ? esc_attr( $atendimento->funcao ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label for="aj_advogados">Advogados *</label>
-            <input type="text" id="aj_advogados" name="aj_advogados" value="<?php echo isset( $atendimento->advogados ) ? esc_attr( $atendimento->advogados ) : ''; ?>" required>
+            <input type="text" id="aj_advogados" name="aj_advogados" value="<?php echo isset( $atendimento->advogados ) ? esc_attr( $atendimento->advogados ) : ''; ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label for="aj_tipo_atendimento">Tipo de atendimento *</label>
-            <select id="aj_tipo_atendimento" name="aj_tipo_atendimento" required>
+            <select id="aj_tipo_atendimento" name="aj_tipo_atendimento" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
                 <option value="">-- Selecione --</option>
                 <option value="AEROPORTOS" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'AEROPORTOS' ); ?>>AEROPORTOS</option>
                 <option value="AII" <?php selected( isset( $atendimento->tipo_atendimento ) ? $atendimento->tipo_atendimento : '', 'AII' ); ?>>AII</option>
@@ -57,11 +57,11 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
         </div>
     </div>
 
-    <!-- Linha 3: Forma de atendimento, Status, Assunto do atendimento -->
+
     <div class="form-row">
         <div class="form-group">
             <label for="aj_forma_atendimento">Forma de atendimento *</label>
-            <select id="aj_forma_atendimento" name="aj_forma_atendimento" required>
+            <select id="aj_forma_atendimento" name="aj_forma_atendimento" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
                 <option value="">-- Selecione --</option>
                 <option value="PRESENCIAL" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'PRESENCIAL' ); ?>>PRESENCIAL</option>
                 <option value="TELEFONE" <?php selected( isset( $atendimento->forma_atendimento ) ? $atendimento->forma_atendimento : '', 'TELEFONE' ); ?>>TELEFONE</option>
@@ -72,7 +72,7 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
         </div>
         <div class="form-group form-group-status">
             <label for="aj_status">Status *</label>
-            <select id="aj_status" name="aj_status" required>
+            <select id="aj_status" name="aj_status" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
                 <option value="">-- Selecione --</option>
                 <option value="AGUARDANDO" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'AGUARDANDO' ); ?>>AGUARDANDO</option>
                 <option value="PENDENTE" <?php selected( isset( $atendimento->status ) ? $atendimento->status : '', 'PENDENTE' ); ?>>PENDENTE</option>
@@ -83,29 +83,29 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
         </div>
         <div class="form-group">
             <label for="aj_assunto">Assunto do atendimento *</label>
-            <textarea id="aj_assunto" name="aj_assunto" rows="1" required><?php echo isset( $atendimento->assunto ) ? esc_textarea( $atendimento->assunto ) : ''; ?></textarea>
+            <textarea id="aj_assunto" name="aj_assunto" rows="1" required <?php echo $is_readonly ? 'disabled' : ''; ?>><?php echo isset( $atendimento->assunto ) ? esc_textarea( $atendimento->assunto ) : ''; ?></textarea>
         </div>
     </div>
 
-    <!-- Linha 4: Nº protocolo, Entrada de processo?, Data e Hora -->
+
     <div class="form-row">
         <div class="form-group">
             <label for="aj_protocolo">Nº protocolo</label>
-            <input type="text" id="aj_protocolo" name="aj_protocolo" value="<?php echo isset( $atendimento->protocolo ) ? esc_attr( $atendimento->protocolo ) : ''; ?>">
+            <input type="text" id="aj_protocolo" name="aj_protocolo" value="<?php echo isset( $atendimento->protocolo ) ? esc_attr( $atendimento->protocolo ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label>Entrada de processo?</label>
             <div class="form-group-checkbox" tabindex="0">
-                <input type="checkbox" id="aj_entrada_processo" name="aj_entrada_processo" value="1" <?php checked( isset( $atendimento->entrada_processo ) ? $atendimento->entrada_processo : 0, 1 ); ?>>
+                <input type="checkbox" id="aj_entrada_processo" name="aj_entrada_processo" value="1" <?php checked( isset( $atendimento->entrada_processo ) ? $atendimento->entrada_processo : 0, 1 ); ?> <?php echo $is_readonly ? 'disabled' : ''; ?>>
                 <span>Não</span>
             </div>
         </div>
         <div class="form-group">
             <label for="aj_data_atendimento">Data do atendimento *</label>
-            <input type="date" id="aj_data_atendimento" name="aj_data_atendimento" value="<?php echo esc_attr( $data_atendimento_val ); ?>" required>
+            <input type="date" id="aj_data_atendimento" name="aj_data_atendimento" value="<?php echo esc_attr( $data_atendimento_val ); ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
         <div class="form-group">
             <label for="aj_hora_atendimento">Hora do atendimento *</label>
-            <input type="time" id="aj_hora_atendimento" name="aj_hora_atendimento" value="<?php echo esc_attr( $hora_atendimento_val ); ?>" required>
+            <input type="time" id="aj_hora_atendimento" name="aj_hora_atendimento" value="<?php echo esc_attr( $hora_atendimento_val ); ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
     </div>

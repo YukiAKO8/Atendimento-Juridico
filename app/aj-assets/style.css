@@ -28,6 +28,12 @@
     box-sizing: border-box; 
     height: 38px; 
 }
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+    background-color: #f0f0f1;
+    cursor: not-allowed;
+}
 
 
 .aj-form-container select { 
@@ -211,6 +217,19 @@
     background-color: #c9302c;
     border-color: #ac2925;
     color: #fff; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.form-actions .aj-btn-voltar {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+.form-actions .aj-btn-voltar:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }

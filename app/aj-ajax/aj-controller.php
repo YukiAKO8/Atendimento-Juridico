@@ -25,6 +25,7 @@ function aj_render_admin_page() {
     // Verifica se estamos na página de edição/criação ou na página de listagem.
     $atendimento_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
     $action = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
+    $is_readonly = ( $action === 'view' );
 
     if ( $atendimento_id > 0 || $action === 'new' ) {
         // --- RENDERIZA A PÁGINA DE FORMULÁRIO (EDIÇÃO/NOVO) ---
@@ -64,7 +65,13 @@ function aj_render_admin_page() {
                 <br>
                 <br>
                 <br>
-                <h1><?php echo $atendimento_id > 0 ? 'Editar Atendimento' : 'Adicionar Novo Atendimento'; ?></h1>
+                <h1>
+                    <?php 
+                        if ($is_readonly) { echo 'Visualizar Atendimento'; }
+                        elseif ($atendimento_id > 0) { echo 'Editar Atendimento'; }
+                        else { echo 'Adicionar Novo Atendimento'; }
+                    ?>
+                </h1>
                 <br>
                 <br>
                 <br>
@@ -129,9 +136,13 @@ function aj_render_admin_page() {
 <br>
 
             <div class="form-actions">
-                <button type="reset" class="button aj-btn-limpar"><span class="dashicons dashicons-trash"></span>Limpar</button>
-                <a href="?page=atendimento-juridico" class="button aj-btn-cancelar"><span class="dashicons dashicons-no-alt"></span>Cancelar</a>
-                <button type="submit" name="submit" id="submit" class="button aj-btn-salvar"><span class="dashicons dashicons-yes-alt"></span>Salvar Atendimento</button>
+                <?php if ( $is_readonly ) : ?>
+                    <a href="?page=atendimento-juridico" class="button aj-btn-voltar"><span class="dashicons dashicons-arrow-left-alt"></span>Voltar à Lista</a>
+                <?php else : ?>
+                    <button type="reset" class="button aj-btn-limpar"><span class="dashicons dashicons-trash"></span>Limpar</button>
+                    <a href="?page=atendimento-juridico" class="button aj-btn-cancelar"><span class="dashicons dashicons-no-alt"></span>Cancelar</a>
+                    <button type="submit" name="submit" id="submit" class="button aj-btn-salvar"><span class="dashicons dashicons-yes-alt"></span>Salvar Atendimento</button>
+                <?php endif; ?>
             </div>
 <br>
 <br>
@@ -245,3 +256,35 @@ function aj_mostrar_notificacao_sucesso() {
     }
 }
 add_action( 'admin_notices', 'aj_mostrar_notificacao_sucesso' );
+
+/**
+ * Manipulador AJAX para excluir um atendimento.
+ */
+function aj_excluir_atendimento_ajax_handler() {
+    // 1. Verificação de segurança (nonce)
+    check_ajax_referer( 'aj_excluir_nonce' );
+
+    // 2. Validação do ID
+    if ( ! isset( $_POST['atendimento_id'] ) || ! is_numeric( $_POST['atendimento_id'] ) ) {
+        wp_send_json_error( [ 'message' => 'ID do atendimento inválido.' ] );
+    }
+    $atendimento_id = absint( $_POST['atendimento_id'] );
+
+    // 3. Exclusão do banco de dados
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aj_atendimentos';
+
+    $result = $wpdb->delete(
+        $table_name,
+        [ 'id' => $atendimento_id ],
+        [ '%d' ]
+    );
+
+    // 4. Envio da resposta
+    if ( $result === false ) {
+        wp_send_json_error( [ 'message' => 'Falha ao excluir o registro no banco de dados.' ] );
+    } else {
+        wp_send_json_success( [ 'message' => 'Atendimento excluído com sucesso.' ] );
+    }
+}
+add_action( 'wp_ajax_aj_excluir_atendimento', 'aj_excluir_atendimento_ajax_handler' );
