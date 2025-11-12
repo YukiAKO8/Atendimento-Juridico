@@ -78,12 +78,27 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         return;
     }
 
+    // Enfileira a fonte Merriweather do Google Fonts
+    wp_enqueue_style(
+        'aj-google-font-merriweather',
+        'https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap',
+        array(),
+        null
+    );
     
+    // Enfileira a fonte Open Sans do Google Fonts
+    wp_enqueue_style(
+        'aj-google-font-open-sans',
+        'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap',
+        array(),
+        null
+    );
+
     wp_enqueue_style(
         'aj-atendimento-juridico-style',
         plugin_dir_url( __FILE__ ) . 'app/aj-assets/style.css',
-        array(),
-        '1.0.3' // Alteramos a versão para forçar a atualização do cache
+        array('aj-google-font-merriweather', 'aj-google-font-open-sans'), // Adiciona as fontes como dependência
+        '1.0.6' // Alteramos a versão para forçar a atualização do cache
     );
 
     
@@ -91,7 +106,7 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-main-script',
         plugin_dir_url( __FILE__ ) . 'app/aj-ajax/aj-admin-main.js',
         array('jquery'), 
-        '1.0.3', // Alteramos a versão para forçar a atualização do cache
+        '1.0.6', // Alteramos a versão para forçar a atualização do cache
         true 
     );
 
@@ -100,7 +115,8 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
         'aj-atendimento-juridico-main-script',
         'aj_object',
         [
-            'nonce' => wp_create_nonce( 'aj_excluir_nonce' )
+            'delete_nonce' => wp_create_nonce( 'aj_excluir_nonce' ),
+            'search_nonce' => wp_create_nonce( 'aj_buscar_nonce' )
         ]
     );
 }

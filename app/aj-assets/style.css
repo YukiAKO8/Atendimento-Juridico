@@ -16,23 +16,41 @@
 }
 
 .form-group label {
+    color: #1d2327;
+    font-size: 13px;
     margin-bottom: 5px;
     font-weight: bold;
 }
 .form-group input,
 .form-group select,
 .form-group textarea {
+    background-color: #fff;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    color: #2c3338;
     width: 100%;
     padding: 8px;
     flex: 1; 
     box-sizing: border-box; 
     height: 38px; 
+    transition: border-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
 }
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
     background-color: #f0f0f1;
     cursor: not-allowed;
+}
+.form-group textarea {
+    height: auto; /* Permite que o textarea cresça */
+    min-height: 38px; /* Altura mínima igual aos outros campos */
 }
 
 
@@ -60,14 +78,310 @@
     border-color: #007c00;
 }
 .form-group-checkbox input[type="checkbox"] {
-    display: none; 
+    display: none;
 }
 .aj-form-container {
-    background-color: #fff;
+    background-color: #fff; /* Fundo branco para o formulário */
     padding: 25px; /* Espaçamento interno para o conteúdo */
     margin-top: 0; /* Remove margem superior para colar nas abas */
-    border-radius: 10px;
-    border: 1px solid #c3c4c7;
+    border-radius: 0 4px 4px 4px; /* Arredonda os cantos, exceto o superior esquerdo */
+    border: 1px solid #c3c4c7; /* Borda padrão do WordPress */
+    border-top: none; /* Remove a borda superior para conectar com as abas */
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+/* --- Estilos da Página de Listagem --- */
+.aj-list-page-wrapper .aj-form-container {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    border-radius: 0;
+}
+
+.aj-list-header {
+    text-align: left;
+    padding: 30px 20px;
+    margin-bottom: 30px;
+}
+
+.aj-header-title-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px; /* Espaçamento entre o logo/título e o subtítulo */
+}
+
+.aj-header-logo {
+    max-width: 250px; /* Logo um pouco maior */
+    height: auto; /* Mantém a proporção */
+    margin-right: -30px; /* Espaçamento entre o logo e o título */
+}
+
+.aj-list-title {
+    font-size: 50px !important;
+    font-weight: 700;
+    font-family: 'Merriweather', serif;
+    color: #1d2327;
+    margin-bottom: -90px !important; /* Remove margens padrão para alinhamento flex */
+}
+
+.aj-list-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: #50575e;
+    margin-top: -30px;
+    margin-left: 80px; 
+}
+
+/* --- Estilos do Novo Container Acima da Pesquisa --- */
+.aj-top-container {
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+    margin-bottom: 20px; /* Espaçamento para a barra de pesquisa abaixo */
+    border-radius: 8px;
+}
+
+.aj-top-container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.aj-top-container-header h4 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.aj-toggle-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.aj-top-container.collapsed .aj-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.aj-top-container-body {
+    padding-top: 20px;
+}
+
+.aj-advanced-filters-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Adiciona espaço entre os botões */
+}
+
+.aj-advanced-filters-actions .aj-clear-filters-btn {
+    background-color: transparent !important;
+    border-color: #ffc107 !important; /* Amarelo */
+    color: #795548 !important; /* Marrom */
+    border-radius: 25px;
+    padding: 8px 25px;
+    font-weight: 600;
+    text-decoration: none;
+    border-width: 2px !important;
+}
+
+.aj-advanced-filters-actions .aj-clear-filters-btn:hover {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #fff !important;
+}
+
+.aj-advanced-filters-actions .aj-advanced-search-btn {
+    background-color: transparent !important;
+    border-color: #28a745 !important;
+    color: #28a745 !important;
+    border-radius: 25px;
+    padding: 8px 25px;
+    font-weight: 600;
+    border-width: 2px !important;
+}
+
+.aj-advanced-filters-actions .aj-advanced-search-btn:hover {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: #fff !important;
+}
+
+.aj-advanced-filters {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr; /* Define a proporção: Período (largo), Status (médio), Tipo (médio) */
+    gap: 25px; /* Aumenta o espaçamento entre os campos */
+}
+
+/* Faz o campo 'Advogado' ocupar o mesmo espaço do 'Período' */
+.aj-filter-advogado {
+    grid-column: 1 / 2;
+}
+
+/* Faz o campo 'Sócio' ocupar o mesmo espaço do 'Status' */
+.aj-filter-socio {
+    grid-column: 2 / 4; /* Faz o Sócio ocupar as colunas 2 e 3 */
+}
+
+.aj-filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.aj-filter-group label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.aj-filter-group input,
+.aj-filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 40px;
+}
+
+.aj-date-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- Estilos da Barra de Pesquisa --- */
+.aj-search-box-wrapper {
+    margin-bottom: 20px;
+    margin-bottom: 30px; /* Aumenta o espaçamento abaixo da barra */
+    display: flex;
+    justify-content: flex-end; /* Alinha o formulário à direita */
+}
+
+.aj-search-box-wrapper form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%; /* Ocupa o espaço disponível */
+    max-width: 450px; /* Reduz a largura máxima da barra */
+}
+
+#aj-search-input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    height: 40px;
+    padding: 0 20px; /* Mais espaçamento interno */
+    height: 40px; /* Deixa a barra mais alta */
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    border-radius: 25px; /* Deixa a barra bem arredondada */
+    font-size: 15px; /* Aumenta o tamanho da fonte */
+}
+
+#aj-search-input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+    border-radius: 25px; /* Mantém o arredondamento no foco */
+}
+
+.aj-search-submit, .aj-search-clear {
+    height: 40px; /* Mesma altura do campo de busca */
+    display: inline-flex;
+    align-items: center;
+    border-radius: 25px; /* Arredonda os botões também */
+}
+
+.aj-search-box-wrapper .aj-search-submit {
+    width: 40px; /* Largura igual à altura para ser redondo */
+    border-radius: 50%; /* Faz o botão ser perfeitamente redondo */
+    justify-content: center; /* Centraliza o ícone */
+    padding: 0; /* Remove o padding para garantir o formato redondo */
+}
+
+.aj-search-submit .dashicons {
+    margin: 0; /* Remove qualquer margem que o ícone possa ter */
+    font-size: 20px; /* Ajusta o tamanho do ícone se necessário */
+    line-height: 1; /* Garante que a altura da linha não adicione espaço extra */
+    display: flex; /* Garante que o ícone se comporte como um item flex */
+    position: relative;
+    left: 8px; /* Move o ícone 8px para a direita */
+}
+
+.aj-search-box-wrapper .aj-search-submit:hover .dashicons {
+    animation: shake-search-icon 0.4s ease-in-out;
+}
+
+/* Animação para o ícone de busca */
+@keyframes shake-search-icon {
+    0% {
+        transform: translateX(0);
+    }
+    33% {
+        transform: translateX(4px); /* Move para a direita */
+    }
+    66% {
+        transform: translateX(-4px); /* Move para a esquerda */
+    }
+    100% {
+        transform: translateX(0); /* Retorna ao centro */
+    }
+}
+
+/* Estilo para a notificação de resultados da busca avançada */
+.aj-search-results-notice {
+    background-color: #d4edda; /* Fundo verde claro */
+    border: 1px solid #c3e6cb; /* Borda verde */
+    color: #155724; /* Texto verde escuro */
+    padding: 12px 20px;
+    margin-bottom: 20px; /* Espaçamento abaixo da notificação */
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.aj-search-clear {
+    padding: 0 20px; /* Espaçamento interno para o texto e ícone */
+    gap: 8px; /* Espaço entre o ícone e o texto */
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* Classe específica para ajustar o ícone da lixeira */
+.aj-search-clear .dashicons-trash {
+    position: relative; /* Permite o ajuste fino da posição */
+    top: 6px; /* Desloca o ícone 6px para baixo para um melhor alinhamento visual */
+}
+
+.aj-search-clear .aj-clear-text {
+    position: relative;
+    top: 6px; /* Desloca o texto 6px para baixo */
+}
+
+
+
+.aj-add-new-button {
+    display: inline-block;
+    background-color: #005a9c;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.aj-add-new-button:hover {
+    background-color: #004a80;
+    transform: translateY(-2px);
+    color: #fff;
 }
 
 /* Novo container para centralizar o formulário */
@@ -75,9 +389,15 @@
     max-width: 1600px; /* Define uma largura máxima */
     margin: 40px auto 0 auto; /* 40px de margem no topo, e centraliza horizontalmente */
 }
+/* Adiciona um fundo à página de listagem */
+.aj-list-page-wrapper.wrap {
+    background-color: #fff;
+    padding: 20px 40px;
+    border-radius: 12px;
+}
 
 
-.aj-nav-tab-wrapper {
+.aj-form-wrapper .aj-nav-tab-wrapper {
     padding-left: 10px;
     position: relative; 
     cursor: pointer;
@@ -85,7 +405,7 @@
     z-index: 1; /* Garante que as abas fiquem na frente da borda do container */
 }
 
-.aj-nav-tab-wrapper .nav-tab {
+.aj-form-wrapper .aj-nav-tab-wrapper .nav-tab {
     display: inline-block;
     padding: 8px 15px;
     text-decoration: none;
@@ -98,11 +418,11 @@
         margin-top: -40px;
 }
 
-.aj-nav-tab-wrapper .nav-tab:hover {
+.aj-form-wrapper .aj-nav-tab-wrapper .nav-tab:hover {
     background-color: #e0e0e0;
 }
 
-.aj-nav-tab-wrapper .nav-tab-active {
+.aj-form-wrapper .aj-nav-tab-wrapper .nav-tab-active {
     background-color: #fff; /* Fundo branco para conectar ao container */
     color: #2c3338;
     font-weight: bold;
@@ -117,6 +437,12 @@
 .tab-content.active {
     display: block;
     animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Container largo apenas para a página de listagem */
+.aj-list-wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 
@@ -265,7 +591,7 @@
     border: 1px solid #c3c4c7;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    z-index: 100;
+    z-index: 999;
     min-width: 180px;
     padding: 5px 0;
 }
@@ -313,6 +639,7 @@
     border: 1px solid #c3c4c7;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    z-index: 102; /* Garante que o submenu fique sobre o menu principal */
     min-width: 120px;
     padding: 5px 0;
 }
@@ -342,23 +669,76 @@
     background: transparent;
 }
 
-/* Estilo para o cabeçalho da tabela: fundo cinza e texto em negrito */
+/* --- Estilo Moderno para a Lista de Atendimentos (Cards) --- */
+
+/* Esconde o cabeçalho tradicional da tabela */
 .aj-form-container .wp-list-table thead th {
-    background-color: #f5f5f5; /* Cinza bem clarinho */
-    font-weight: bold;
+    display: none;
 }
 
-/* Estilo para as linhas da tabela: fundo branco com separador cinza */ 
-.aj-form-container .wp-list-table.striped tbody tr {
-    background-color: #fff; /* Força o fundo branco em todas as linhas */
-    border-bottom: 3px solid #e0e0e0; /* Adiciona uma linha cinza mais visível como separador */
-    transition: background-color 0.15s ease-in-out; /* Adiciona transição suave para o hover */
+/* Remove bordas e espaçamentos da tabela */
+.aj-form-container .wp-list-table {
+    border-spacing: 0;
+    border-collapse: collapse;
 }
 
-.aj-form-container .wp-list-table.striped tbody tr:hover {
-    background-color: #f5f5f5; /* Cor de fundo suave ao passar o mouse */
+/* Transforma cada linha (tr) em um card */
+.aj-card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Layout responsivo */
+    gap: 15px 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
+.aj-card-row:not(.actions-menu-open):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Estiliza cada célula (td) dentro do card */
+.aj-card-row td {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: none;
+    background: transparent;
+    align-items: flex-start; /* Alinha conteúdo à esquerda */
+}
+
+/* Adiciona o rótulo (do data-label) antes do conteúdo da célula */
+.aj-card-row td::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 600;
+    color: #646970;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+/* Ajustes específicos para colunas */
+.aj-card-row .column-assunto .row-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #005a9c;
+}
+
+.aj-card-row .column-actions {
+    grid-row: 1; /* Move para a primeira linha */
+    grid-column: -1; /* Alinha no canto direito */
+    justify-self: flex-end;
+    align-items: center; /* Centraliza o botão horizontalmente na sua coluna */
+}
+
+.aj-card-row .column-actions::before {
+    display: none; /* Esconde o rótulo "Ações" */
+}
+
+/* Remove a borda do último item que não é mais necessária */
 .aj-form-container .wp-list-table.striped tbody tr:last-child { 
     border-bottom: none; /* Remove a borda da última linha para um acabamento limpo */
 }
@@ -379,7 +759,7 @@
 /* Aguardando e Indeferido: fundo azul com letra branca */
 .aj-status-badge.aj-status-aguardando,
 .aj-status-badge.aj-status-indeferido {
-    background-color: #0073aa;
+    background-color: #0270a3;
     color: #fff;
 }
 
@@ -399,4 +779,72 @@
 .aj-status-badge.aj-status-cancelado {
     background-color: #f8d7da;
     color: #721c24;
+}
+
+/* --- Estilos para Paginação --- */
+.aj-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding: 10px;
+    user-select: none; /* Evita seleção de texto */
+}
+
+.aj-pagination .aj-page-nav,
+.aj-pagination .aj-page-current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: #007cba;
+    background-color: #fff;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.aj-pagination .aj-page-nav:hover {
+    background-color: #f0f0f1;
+    border-color: #a0a5aa;
+}
+
+.aj-pagination .aj-page-current {
+    background-color: #007cba;
+    border-color: #007cba;
+    color: #fff;
+    cursor: default;
+}
+
+/* Floating Action Button (FAB) para adicionar novo atendimento */
+.aj-fab-add-new {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007cba; /* Cor primária do WordPress */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px; /* Tamanho do ícone Dashicon */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.aj-fab-add-new:hover {
+    background-color: #005a9c; /* Um tom um pouco mais escuro no hover */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    color: #fff;
 }

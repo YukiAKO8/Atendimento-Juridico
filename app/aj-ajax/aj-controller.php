@@ -152,8 +152,8 @@ function aj_render_admin_page() {
         </div>
         <?php
     } else {
-        // Adiciona o wrapper para centralizar a lista também
-        echo '<div class="aj-form-wrapper">';
+        // Adiciona um wrapper específico para a página de listagem
+        echo '<div class="aj-list-wrapper">';
         require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/lista-atendimento.php';
         echo '</div>';
     }
@@ -288,3 +288,53 @@ function aj_excluir_atendimento_ajax_handler() {
     }
 }
 add_action( 'wp_ajax_aj_excluir_atendimento', 'aj_excluir_atendimento_ajax_handler' );
+
+/**
+ * Manipulador AJAX para buscar atendimentos.
+ */
+function aj_buscar_atendimentos_ajax_handler() {
+    // 1. Verificação de segurança (nonce)
+    check_ajax_referer( 'aj_buscar_nonce' );
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aj_atendimentos';
+
+    $search_term = isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '';
+
+    $base_query = "FROM $table_name";
+    $where_clause = '';
+
+    if ( ! empty( $search_term ) ) {
+        $like_term = '%' . $wpdb->esc_like( $search_term ) . '%';
+        $where_clause = $wpdb->prepare(
+            " WHERE (assunto LIKE %s OR socios LIKE %s OR protocolo LIKE %s OR advogados LIKE %s)",
+            $like_term, $like_term, $like_term, $like_term
+        );
+    } else {
+        // Se a busca for vazia, retorna os do mês atual (comportamento padrão)
+        $where_clause = $wpdb->prepare(
+            " WHERE MONTH(data_atendimento) = MONTH(CURDATE()) AND YEAR(data_atendimento) = YEAR(CURDATE())"
+        );
+    }
+
+    $query = "SELECT * $base_query $where_clause ORDER BY id DESC";
+    $atendimentos = $wpdb->get_results( $query );
+
+    // Formata os dados para o front-end
+    $data_to_send = [];
+    if ( ! empty( $atendimentos ) ) {
+        foreach ( $atendimentos as $atendimento ) {
+            $atendimento->edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
+            $atendimento->view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ] );
+            $atendimento->data_formatada = date( 'd/m/Y H:i', strtotime( $atendimento->data_atendimento ) );
+            $data_to_send[] = $atendimento;
+        }
+    }
+
+    if ( $atendimentos === null ) {
+        wp_send_json_error( [ 'message' => 'Erro na consulta ao banco de dados.' ] );
+    } else {
+        wp_send_json_success( $data_to_send );
+    }
+}
+add_action( 'wp_ajax_aj_buscar_atendimentos', 'aj_buscar_atendimentos_ajax_handler' );
