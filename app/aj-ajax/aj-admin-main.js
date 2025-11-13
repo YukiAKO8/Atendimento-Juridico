@@ -199,6 +199,7 @@ jQuery(document).ready(function($) {
     // --- LÓGICA DA LISTA DE ATENDIMENTOS (PESQUISA HÍBRIDA) ---
 
     var currentResults = []; // Armazena os resultados da última busca (avançada ou inicial)
+    var currentPage = 1; // Adicionado para controlar a página atual
 
     /**
      * Renderiza a lista de atendimentos na tabela.
@@ -271,28 +272,82 @@ jQuery(document).ready(function($) {
     }
 
     /**
-     * Realiza a busca AVANÇADA via AJAX e atualiza a tabela.
+     * Renderiza os controles de paginação.
+     * @param {number} totalItems - O número total de itens.
+     * @param {number} itemsPerPage - Itens por página.
+     * @param {number} currentPage - A página atual.
      */
-    function performAdvancedSearch() {
+    function renderPagination(totalItems, itemsPerPage, currentPage) {
+        const $paginationContainer = $('#aj-pagination-container');
+        $paginationContainer.empty();
+
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        if (totalPages <= 1) {
+            return; // Não mostra paginação se só tem uma página
+        }
+
+        let paginationHtml = '<div class="aj-pagination">';
+
+        // Seta "Anterior"
+        if (currentPage > 1) {
+            paginationHtml += `<a href="#" class="aj-page-nav aj-page-prev" data-page="${currentPage - 1}"><span class="dashicons dashicons-arrow-left-alt2"></span></a>`;
+        } else {
+            paginationHtml += `<span class="aj-page-nav aj-page-disabled"><span class="dashicons dashicons-arrow-left-alt2"></span></span>`;
+        }
+
+        // Indicador da página atual
+        paginationHtml += `<span class="aj-page-current">${currentPage}</span>`;
+
+        // Seta "Próximo"
+        if (currentPage < totalPages) {
+            paginationHtml += `<a href="#" class="aj-page-nav aj-page-next" data-page="${currentPage + 1}"><span class="dashicons dashicons-arrow-right-alt2"></span></a>`;
+        } else {
+            paginationHtml += `<span class="aj-page-nav aj-page-disabled"><span class="dashicons dashicons-arrow-right-alt2"></span></span>`;
+        }
+
+        paginationHtml += '</div>';
+        $paginationContainer.html(paginationHtml);
+    }
+
+    /**
+     * Realiza a busca AVANÇADA via AJAX e atualiza a tabela.
+     * @param {number} page - O número da página a ser buscada.
+     */
+    function performAdvancedSearch(page = 1) {
+        currentPage = page; // Atualiza a página atual
+
         // Efeito de loading
         $('#the-list').css('opacity', 0.5);
 
         // Coleta todos os dados do formulário
         const formData = $('#aj-search-form').serialize();
-        const requestData = formData + '&action=aj_buscar_atendimentos&_ajax_nonce=' + aj_object.search_nonce;
+        // Adiciona o parâmetro 'page' à requisição
+        const requestData = formData + '&action=aj_buscar_atendimentos&_ajax_nonce=' + aj_object.search_nonce + '&page=' + currentPage;
 
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: requestData,
             success: function(response) {
-                if (response.success) {
-                    currentResults = response.data; // Armazena os resultados para o filtro simples
+                if (response.success && typeof response.data === 'object') {
+                    // A busca simples (keyup) agora é desativada quando há paginação,
+                    // pois ela só funciona no conjunto de dados visível.
+                    // Para uma experiência consistente, toda busca irá ao servidor.
+                    currentResults = response.data.data; // Os resultados estão em response.data.data
                     renderAtendimentos(currentResults);
+                    // Renderiza a paginação com base no total de itens e na página atual
+                    renderPagination(response.data.total, 8, currentPage);
+
                     // Exibe a notificação de resultados
                     const $notice = $('#aj-results-notice');
-                    const message = `${response.data.length} resultado(s) encontrado(s).`;
-                    $notice.text(message).show();
+                    const message = `${response.data.total} resultado(s) encontrado(s).`; // Usa response.data.total
+                    $notice.text(message).fadeIn(); // Efeito fadeIn
+
+                    // Oculta a notificação após 5 segundos
+                    setTimeout(function() {
+                        $notice.fadeOut('slow'); // Efeito fadeOut
+                    }, 3000); // 3000 milissegundos = 3 segundos
                 } else {
                     alert('Erro ao buscar atendimentos: ' + response.data.message);
                 }
@@ -309,38 +364,32 @@ jQuery(document).ready(function($) {
 
     // --- EVENTOS ---
 
-    // Busca AVANÇADA (ao submeter o formulário)
+    // Busca AVANÇADA (ao submeter o formulário ou ao clicar nos botões de paginação)
     $('#aj-search-form').on('submit', function(e) {
         e.preventDefault();
-        performAdvancedSearch();
+        performAdvancedSearch(1); // Sempre volta para a primeira página ao fazer uma nova busca
     });
 
-    // Busca SIMPLES (filtra os resultados já exibidos, sem ir ao servidor)
+    // A busca simples (keyup) agora também vai ao servidor para consistência com a paginação.
     $('#aj-search-input').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-
-        if (!searchTerm) {
-            renderAtendimentos(currentResults); // Se a busca estiver vazia, mostra todos os resultados atuais
-            return;
-        }
-
-        const filteredResults = currentResults.filter(function(item) {
-            return (
-                item.assunto.toLowerCase().includes(searchTerm) ||
-                item.socios.toLowerCase().includes(searchTerm) ||
-                item.protocolo.toLowerCase().includes(searchTerm) ||
-                item.advogados.toLowerCase().includes(searchTerm)
-            );
-        });
-
-        renderAtendimentos(filteredResults);
+        // Para evitar muitas requisições, poderíamos adicionar um "debounce" aqui,
+        // mas por simplicidade, vamos manter a busca a cada tecla.
+        // A busca principal agora é feita pelo botão ou Enter no formulário.
     });
 
     // Limpar Filtros
     $('.aj-clear-filters-btn').on('click', function() {
         $('#aj-search-form')[0].reset();
         $('#aj-results-notice').hide();
-        performAdvancedSearch(); // Realiza a busca padrão (mês atual) no servidor
+        performAdvancedSearch(1); // Realiza a busca padrão no servidor
+    });
+
+    // Evento para cliques na paginação
+    $(document).on('click', '.aj-page-nav', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        performAdvancedSearch(page);
+        $('html, body').animate({ scrollTop: $('.aj-list-page-wrapper').offset().top }, 300); // Rola para o topo da lista
     });
 
     // --- INICIALIZAÇÃO ---

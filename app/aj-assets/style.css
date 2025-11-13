@@ -215,19 +215,9 @@
 }
 
 .aj-advanced-filters {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr; /* Define a proporção: Período (largo), Status (médio), Tipo (médio) */
+    display: grid; /* Ativa o grid layout */
+    grid-template-columns: 1fr 1fr; /* Duas colunas de tamanho igual */
     gap: 25px; /* Aumenta o espaçamento entre os campos */
-}
-
-/* Faz o campo 'Advogado' ocupar o mesmo espaço do 'Período' */
-.aj-filter-advogado {
-    grid-column: 1 / 2;
-}
-
-/* Faz o campo 'Sócio' ocupar o mesmo espaço do 'Status' */
-.aj-filter-socio {
-    grid-column: 2 / 4; /* Faz o Sócio ocupar as colunas 2 e 3 */
 }
 
 .aj-filter-group {
@@ -251,6 +241,13 @@
     height: 40px;
 }
 
+/* Sobrescreve o estilo padrão do WordPress para selects dentro do plugin */
+.aj-filter-group select,
+.form-group select {
+    max-width: none; /* Remove a largura máxima imposta pelo WordPress */
+    line-height: 1.5; /* Ajusta a altura da linha para alinhar o texto verticalmente */
+}
+
 .aj-date-range {
     display: flex;
     align-items: center;
@@ -267,7 +264,7 @@
 
 .aj-search-box-wrapper form {
     display: flex;
-    gap: 10px;
+   gap: 10px;
     align-items: center;
     width: 100%; /* Ocupa o espaço disponível */
     max-width: 450px; /* Reduz a largura máxima da barra */
@@ -276,20 +273,21 @@
 #aj-search-input {
     flex-grow: 1;
     padding: 8px 12px;
-    height: 40px;
+   height: 40px;
     padding: 0 20px; /* Mais espaçamento interno */
     height: 40px; /* Deixa a barra mais alta */
     border: 1px solid #8c8f94;
     border-radius: 4px;
-    border-radius: 25px; /* Deixa a barra bem arredondada */
+    border-radius: 4px; /* Deixa a barra com cantos arredondados */
     font-size: 15px; /* Aumenta o tamanho da fonte */
+    max-width: 100px; /* Reduz a largura máxima do campo de busca */
 }
 
 #aj-search-input:focus {
     border-color: #2271b1;
     box-shadow: 0 0 0 1px #2271b1;
     outline: 2px solid transparent;
-    border-radius: 25px; /* Mantém o arredondamento no foco */
+   border-radius: 4px; /* Mantém o arredondamento no foco */
 }
 
 .aj-search-submit, .aj-search-clear {
@@ -798,28 +796,38 @@
     align-items: center;
     justify-content: center;
     min-width: 40px;
-    height: 40px;
+    height: 38px;
     padding: 0 10px;
     border: 1px solid #c3c4c7;
     border-radius: 4px;
+    box-sizing: border-box;
     text-decoration: none;
     font-size: 16px;
     font-weight: 600;
     color: #007cba;
     background-color: #fff;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .aj-pagination .aj-page-nav:hover {
     background-color: #f0f0f1;
     border-color: #a0a5aa;
+    color: #005a9c;
 }
 
 .aj-pagination .aj-page-current {
-    background-color: #007cba;
-    border-color: #007cba;
-    color: #fff;
+    background-color: transparent;
+    border-color: transparent;
+    color: #50575e;
     cursor: default;
+    font-size: 14px;
+}
+
+.aj-pagination .aj-page-disabled {
+    color: #a0a5aa;
+    background-color: #f0f0f1;
+    cursor: not-allowed;
+    border-color: #ddd;
 }
 
 /* Floating Action Button (FAB) para adicionar novo atendimento */

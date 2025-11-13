@@ -230,7 +230,18 @@ function aj_processar_formulario() {
         return;
     }
     if ( ! wp_verify_nonce( $_POST['aj_atendimento_nonce'], 'aj_salvar_atendimento' ) ) {
-        wp_die( 'A verificação de segurança falhou.' );
+        // Em vez de encerrar, redireciona de volta com uma mensagem de erro.
+        // Isso melhora a experiência do usuário, especialmente se os dados do formulário
+        // estiverem salvos no localStorage, evitando a perda de dados.
+        $redirect_url = add_query_arg(
+            [
+                'page'    => 'atendimento-juridico',
+                'security_fail' => 'true'
+            ],
+            admin_url( 'admin.php' )
+        );
+        wp_redirect( $redirect_url );
+        exit;
     }
 
  
@@ -318,6 +329,13 @@ function aj_mostrar_notificacao_sucesso() {
 }
 add_action( 'admin_notices', 'aj_mostrar_notificacao_sucesso' );
 
+function aj_mostrar_notificacao_falha_seguranca() {
+    if ( isset( $_GET['security_fail'] ) && $_GET['security_fail'] === 'true' ) {
+        echo '<div class="notice notice-error is-dismissible"><p>A verificação de segurança falhou. Por favor, tente salvar o atendimento novamente.</p></div>';
+    }
+}
+add_action( 'admin_notices', 'aj_mostrar_notificacao_falha_seguranca' );
+
 /**
  * Manipulador AJAX para excluir um atendimento.
  */
@@ -358,24 +376,26 @@ function aj_buscar_atendimentos_ajax_handler() {
         'adv_status'      => isset( $_POST['adv_status'] ) ? sanitize_text_field( $_POST['adv_status'] ) : '',
         'adv_data_inicio' => isset( $_POST['adv_data_inicio'] ) ? sanitize_text_field( $_POST['adv_data_inicio'] ) : '',
         'adv_data_fim'    => isset( $_POST['adv_data_fim'] ) ? sanitize_text_field( $_POST['adv_data_fim'] ) : '',
+        'page'            => isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1,
+        'per_page'        => 8, // Definido como 8, conforme solicitado
     ];
-    $atendimentos = aj_search_atendimentos( $search_args );
+    $search_result = aj_search_atendimentos( $search_args );
+    $atendimentos = $search_result['results'];
 
     // Formata os dados para o front-end
     $data_to_send = [];
     if ( ! empty( $atendimentos ) ) {
         foreach ( $atendimentos as $atendimento ) {
-            $atendimento->edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
-            $atendimento->view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ] );
+            $atendimento->edit_url = esc_url( add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ], admin_url('admin.php') ) );
+            $atendimento->view_url = esc_url( add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ], admin_url('admin.php') ) );
             $atendimento->data_formatada = date( 'd/m/Y H:i', strtotime( $atendimento->data_atendimento ) );
             $data_to_send[] = $atendimento;
         }
     }
 
-    if ( $atendimentos === null ) {
-        wp_send_json_error( [ 'message' => 'Erro na consulta ao banco de dados.' ] );
-    } else {
-        wp_send_json_success( $data_to_send );
-    }
+    wp_send_json_success( [
+        'data'  => $data_to_send,
+        'total' => $search_result['total']
+    ] );
 }
 add_action( 'wp_ajax_aj_buscar_atendimentos', 'aj_buscar_atendimentos_ajax_handler' );

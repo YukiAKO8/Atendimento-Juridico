@@ -84,7 +84,7 @@ function aj_delete_atendimento( $id ) {
  * Busca atendimentos no banco de dados com base em múltiplos critérios.
  *
  * @param array $args Argumentos para a busca.
- * @return array|null A lista de atendimentos encontrados.
+ * @return array Um array contendo 'results' e 'total'.
  */
 function aj_search_atendimentos( $args = [] ) {
     global $wpdb;
@@ -98,8 +98,11 @@ function aj_search_atendimentos( $args = [] ) {
     $status          = isset( $args['adv_status'] ) ? $args['adv_status'] : '';
     $data_inicio     = isset( $args['adv_data_inicio'] ) ? $args['adv_data_inicio'] : '';
     $data_fim        = isset( $args['adv_data_fim'] ) ? $args['adv_data_fim'] : '';
+    $page            = isset( $args['page'] ) ? absint( $args['page'] ) : 1;
+    $per_page        = isset( $args['per_page'] ) ? absint( $args['per_page'] ) : 8; // Itens por página
+    $offset          = ( $page - 1 ) * $per_page;
 
-    $base_query = "SELECT * FROM $table_name";
+    $from_clause = "FROM $table_name";
     $where_clauses = [];
     $params = [];
 
@@ -142,10 +145,21 @@ function aj_search_atendimentos( $args = [] ) {
         $where_clauses[] = "MONTH(data_atendimento) = MONTH(CURDATE()) AND YEAR(data_atendimento) = YEAR(CURDATE())";
     }
 
+    $where_query = "";
     if ( ! empty( $where_clauses ) ) {
-        $base_query .= " WHERE " . implode( ' AND ', $where_clauses );
+        $where_query = " WHERE " . implode( ' AND ', $where_clauses );
     }
 
-    $query = $wpdb->prepare( $base_query . " ORDER BY id DESC", $params );
-    return $wpdb->get_results( $query );
+    // Query para contar o total de resultados
+    $total_query = "SELECT COUNT(id) " . $from_clause . $where_query;
+    $total = $wpdb->get_var( $wpdb->prepare( $total_query, $params ) );
+
+    // Query para buscar os resultados da página atual
+    $main_query = "SELECT * " . $from_clause . $where_query . " ORDER BY id DESC LIMIT %d OFFSET %d";
+    $params[] = $per_page;
+    $params[] = $offset;
+    
+    $results = $wpdb->get_results( $wpdb->prepare( $main_query, $params ) );
+
+    return [ 'results' => $results, 'total' => (int) $total ];
 }

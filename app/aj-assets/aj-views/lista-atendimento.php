@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -15,7 +15,8 @@ $initial_search_args = [
 ];
 
 // Carrega os atendimentos iniciais usando a função de busca do Model
-$atendimentos = aj_search_atendimentos( $initial_search_args );
+$search_result = aj_search_atendimentos( $initial_search_args );
+$atendimentos = $search_result['results'];
 
 $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'new' ] );
 
@@ -40,6 +41,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     <form method="get" id="aj-search-form">
         <input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
 
+
         <!-- Container da Pesquisa Avançada -->
         <div class="aj-top-container collapsed">
             <div class="aj-top-container-header">
@@ -49,6 +51,10 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
             <div class="aj-top-container-body" style="display: none;">
                 <div class="aj-advanced-filters">
                     <div class="aj-filter-group">
+                        <label for="aj-search-input">Assunto</label>
+                        <input type="search" id="aj-search-input" name="s" value="<?php echo esc_attr( $search_term ); ?>" placeholder="Pesquisar por assunto, protocolo...">
+                    </div>
+                    <div class="aj-filter-group">
                         <label>Período de atendimento</label>
                         <div class="aj-date-range">
                             <input type="date" name="adv_data_inicio" value="<?php echo esc_attr($adv_data_inicio); ?>">
@@ -56,6 +62,8 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                             <input type="date" name="adv_data_fim" value="<?php echo esc_attr($adv_data_fim); ?>">
                         </div>
                     </div>
+
+                    <!-- Nova linha de filtros -->
                     <div class="aj-filter-group">
                         <label for="adv_status">Status</label>
                         <select id="adv_status" name="adv_status">
@@ -67,7 +75,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                             <option value="INDEFERIDO" <?php selected($adv_status, 'INDEFERIDO'); ?>>INDEFERIDO</option>
                         </select>
                     </div>
-                    <div class="aj-filter-group aj-filter-tipo-atendimento">
+                    <div class="aj-filter-group">
                         <label for="adv_tipo">Tipo de atendimento</label>
                         <select id="adv_tipo" name="adv_tipo">
                             <option value="">Todos</option>
@@ -77,28 +85,25 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                             <option value="OUTROS" <?php selected($adv_tipo, 'OUTROS'); ?>>OUTROS</option>
                         </select>
                     </div>
-                    <div class="aj-filter-group aj-filter-advogado">
+
+                    <!-- Nova linha de filtros -->
+                    <div class="aj-filter-group">
                         <label for="adv_advogado">Advogado</label>
                         <input type="text" id="adv_advogado" name="adv_advogado" value="<?php echo esc_attr($adv_advogado); ?>">
                     </div>
-                    <div class="aj-filter-group aj-filter-socio">
+                    <div class="aj-filter-group">
                         <label for="adv_socio">Sócio</label>
                         <input type="text" id="adv_socio" name="adv_socio" value="<?php echo esc_attr($adv_socio); ?>">
                     </div>
                 </div>
                 <div class="aj-advanced-filters-actions">
                     <button type="button" class="button aj-clear-filters-btn">Limpar Filtros</button>
-                    <button type="submit" class="button aj-advanced-search-btn" id="aj-advanced-search-btn">Realizar pesquisa</button>
+                    <button type="submit" class="button aj-advanced-search-btn" id="aj-advanced-search-btn">
+                        <span class="dashicons dashicons-search"></span> Realizar pesquisa
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Formulário de Pesquisa Principal -->
-        <div class="aj-search-box-wrapper">
-            <input type="search" id="aj-search-input" name="s" value="<?php echo esc_attr( $search_term ); ?>" placeholder="Pesquisar por assunto, sócio, protocolo...">
-            <button type="submit" id="aj-search-submit" class="button aj-search-submit"><span class="dashicons dashicons-search"></span></button>
-        </div>
-    </form>
 
     <div id="aj-results-notice" class="aj-search-results-notice" style="display: none;"></div>
 
@@ -121,12 +126,12 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
             <?php if ( ! empty( $atendimentos ) ) : ?>
                 <?php foreach ( $atendimentos as $atendimento ) : ?>
                     <?php
-                     
-                        $edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
-                        $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ] );
+                        // Garante que os URLs de edição e visualização apontem para admin.php
+                        $edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ], admin_url('admin.php') );
+                        $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ], admin_url('admin.php') );
                     ?>
                     <tr class="aj-card-row">
-                        <td class="id column-id" data-label="ID"><?php echo esc_html( $atendimento->id ); ?></td>
+                        <td class="id column-id" data-label="ID"><?php echo is_object( $atendimento ) ? esc_html( $atendimento->id ) : ''; ?></td>
                         <td class="assunto column-assunto" data-label="Assunto">
                             <strong><a class="row-title" href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $atendimento->assunto ); ?></a></strong>
                         </td>
