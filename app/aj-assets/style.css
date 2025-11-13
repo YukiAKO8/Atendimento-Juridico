@@ -113,7 +113,7 @@
 }
 
 .aj-header-logo {
-    max-width: 250px; /* Logo um pouco maior */
+    max-width: 190px; /* Logo um pouco maior */
     height: auto; /* Mantém a proporção */
     margin-right: -30px; /* Espaçamento entre o logo e o título */
 }

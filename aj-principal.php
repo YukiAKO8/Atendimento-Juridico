@@ -40,6 +40,7 @@ register_deactivation_hook( __FILE__, 'deactivate_atendimento_juridico' );
 
 // Inclui os arquivos do Controller e do Banco de Dados
 require_once plugin_dir_path( __FILE__ ) . 'app/aj-ajax/aj-controller.php';
+require_once plugin_dir_path( __FILE__ ) . 'app/aj-ajax/aj-atendimento-model.php';
 require_once plugin_dir_path( __FILE__ ) . 'utils/aj-db.php';
 
 

@@ -5,11 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
+// Inicializa as variáveis com valores existentes ou vazios para novos atendimentos
 $socios = isset( $atendimento->socios ) ? $atendimento->socios : '';
 $data_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'Y-m-d', strtotime( $atendimento->data_atendimento ) ) : '';
 $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', strtotime( $atendimento->data_atendimento ) ) : '';
 ?>
-<h2>Editando Dados</h2>
 
     <div class="form-row">
         <div class="form-group">
@@ -91,7 +91,7 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
     <div class="form-row">
         <div class="form-group">
             <label for="aj_protocolo">Nº protocolo</label>
-            <input type="text" id="aj_protocolo" name="aj_protocolo" value="<?php echo isset( $atendimento->protocolo ) ? esc_attr( $atendimento->protocolo ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
+            <input type="text" id="aj_protocolo" name="aj_protocolo" value="<?php echo isset( $atendimento->protocolo ) ? esc_attr( $atendimento->protocolo ) : ''; ?>" readonly disabled>
         </div>
         <div class="form-group">
             <label>Entrada de processo?</label>

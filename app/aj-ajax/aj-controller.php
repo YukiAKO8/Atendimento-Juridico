@@ -18,45 +18,110 @@ function aj_get_current_tab() {
 }
 
 /**
- * Renderiza o conteúdo completo da página de administração do plugin.
- * Inclui a navegação por abas e carrega a view da aba correta.
+ * Generates a complete and unique protocol string.
+ * This protocol is independent of the database ID.
+ *
+ * Format: [MÊS + ANO][ANAGRAMA CURTO][369]-[SUFIXO ÚNICO]
+ * Example: 1125LUP369-A4B1C
+ *
+ * @return string The generated unique protocol.
  */
+function aj_generate_unique_protocol() {
+ 
+    $month_year = date('my'); 
+
+   
+    $protocol_words = [
+        'Creatio',
+        'Aequilibrium',
+        'Illuminatio'
+    ];
+   
+    $random_word = $protocol_words[array_rand($protocol_words)];
+   
+    $shuffled_word = str_shuffle($random_word);
+    $random_anagram = substr($shuffled_word, 0, 4);
+
+   
+    $magic_number = '369';
+    $placement_options = ['start', 'middle', 'end'];
+    $random_placement = $placement_options[array_rand($placement_options)];
+
+    $protocol_core = '';
+    switch ($random_placement) {
+        case 'start':
+           
+            $protocol_core = $magic_number . $random_anagram;
+            break;
+        case 'middle':
+        
+            $len = strlen($random_anagram);
+            $mid = floor($len / 2);
+            $protocol_core = substr($random_anagram, 0, $mid) . $magic_number . substr($random_anagram, $mid);
+            break;
+        case 'end':
+          
+            $protocol_core = $random_anagram . $magic_number;
+            break;
+    }
+
+    
+    $base_protocol = strtoupper($month_year . $protocol_core);
+
+  
+    $unique_suffix = substr(uniqid(), -3);
+
+   
+    return $base_protocol . '-' . strtoupper($unique_suffix);
+}
+
+
+
 function aj_render_admin_page() {
-    // Verifica se estamos na página de edição/criação ou na página de listagem.
+   
     $atendimento_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
     $action = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
     $is_readonly = ( $action === 'view' );
 
     if ( $atendimento_id > 0 || $action === 'new' ) {
-        // --- RENDERIZA A PÁGINA DE FORMULÁRIO (EDIÇÃO/NOVO) ---
+       
 
-        // Busca os dados do atendimento no banco de dados se for uma edição.
+   
         $atendimento = null;
         $cadastrado_por_user = null;
         $alterado_por_user = null;
 
         if ( $atendimento_id > 0 ) {
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'aj_atendimentos';
-            $atendimento = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $atendimento_id ) );
 
-            // Se o atendimento não for encontrado, exibe um erro.
+            $atendimento = aj_get_atendimento_by_id( $atendimento_id );
+
+         
             if ( ! $atendimento ) {
                 wp_die( 'Atendimento não encontrado.' );
             }
 
-            // Busca os dados dos usuários para exibição.
+      
             if ( $atendimento->cadastrado_por ) {
                 $cadastrado_por_user = get_userdata( $atendimento->cadastrado_por );
             }
             if ( $atendimento->alterado_por ) {
                 $alterado_por_user = get_userdata( $atendimento->alterado_por );
             }
+        } else {
+         
+            $atendimento = (object) [
+                'id' => 0,
+                'protocolo' => aj_generate_unique_protocol(),
+                'cadastrado_por' => null,
+                'data_cadastro' => null,
+                'alterado_por' => null,
+                'data_alteracao' => null,
+            ];
         }
 
-        // Obtém a aba atual a partir desta mesma controller.
+     
         $current_tab = aj_get_current_tab();
-        // Obtém o usuário atual
+     
         $current_user = wp_get_current_user();
         ?>
         <div class="wrap">
@@ -111,14 +176,14 @@ function aj_render_admin_page() {
 
           
             <div class="aj-meta-container">
-                <?php if ( $atendimento ) :  ?>
+                <?php if ( $atendimento_id > 0 && $atendimento ) :  ?>
                     <span class="meta-item">
                         <strong>Cadastrado por:</strong> 
                         <span id="aj_cadastrado_por"><?php echo $cadastrado_por_user ? esc_html( $cadastrado_por_user->display_name ) : 'N/A'; ?></span>
                     </span>
                     <span class="meta-item">
                         <strong>Data do cadastro:</strong> 
-                        <span id="aj_data_cadastro"><?php echo esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_cadastro ) ) ); ?></span>
+                        <span id="aj_data_cadastro"><?php echo $atendimento->data_cadastro ? esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_cadastro ) ) ) : 'N/A'; ?></span>
                     </span>
                     <span class="meta-item">
                         <strong>Alterado por:</strong> 
@@ -126,7 +191,7 @@ function aj_render_admin_page() {
                     </span>
                     <span class="meta-item">
                         <strong>Data da última alteração:</strong> 
-                        <span id="aj_data_alteracao"><?php echo esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_alteracao ) ) ); ?></span>
+                        <span id="aj_data_alteracao"><?php echo $atendimento->data_alteracao ? esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_alteracao ) ) ) : 'N/A'; ?></span>
                     </span>
                 <?php endif; ?>
 
@@ -167,10 +232,6 @@ function aj_processar_formulario() {
     if ( ! wp_verify_nonce( $_POST['aj_atendimento_nonce'], 'aj_salvar_atendimento' ) ) {
         wp_die( 'A verificação de segurança falhou.' );
     }
-
-    
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'aj_atendimentos';
 
  
     $data = [];
@@ -215,16 +276,17 @@ function aj_processar_formulario() {
       
         $data['alterado_por'] = get_current_user_id(); // Guarda quem alterou
         $where = [ 'id' => $atendimento_id ];
-        $result = $wpdb->update( $table_name, $data, $where );
-
+        $result = aj_update_atendimento( $atendimento_id, $data );
     } else {
        
         $data['cadastrado_por'] = get_current_user_id(); // Guarda quem cadastrou
-        $result = $wpdb->insert(
-            $table_name,
-            $data
-        );
-        $atendimento_id = $wpdb->insert_id; // Pega o ID do novo registro
+
+        // Gera o protocolo único e completo no momento da criação.
+        // O valor do POST é ignorado para garantir que seja sempre gerado pelo sistema.
+        $data['protocolo'] = aj_generate_unique_protocol();
+
+        $atendimento_id = aj_insert_atendimento( $data );
+        $result = $atendimento_id !== false;
     }
 
  
@@ -233,7 +295,6 @@ function aj_processar_formulario() {
         add_action( 'admin_notices', function() {
             echo '<div class="notice notice-error is-dismissible"><p>Ocorreu um erro ao salvar o atendimento.</p></div>';
         });
-        error_log( "Erro ao salvar o atendimento: " . $wpdb->last_error );
     } else {
      
         $redirect_url = add_query_arg(
@@ -271,15 +332,7 @@ function aj_excluir_atendimento_ajax_handler() {
     $atendimento_id = absint( $_POST['atendimento_id'] );
 
     // 3. Exclusão do banco de dados
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'aj_atendimentos';
-
-    $result = $wpdb->delete(
-        $table_name,
-        [ 'id' => $atendimento_id ],
-        [ '%d' ]
-    );
-
+    $result = aj_delete_atendimento( $atendimento_id );
     // 4. Envio da resposta
     if ( $result === false ) {
         wp_send_json_error( [ 'message' => 'Falha ao excluir o registro no banco de dados.' ] );
@@ -296,29 +349,17 @@ function aj_buscar_atendimentos_ajax_handler() {
     // 1. Verificação de segurança (nonce)
     check_ajax_referer( 'aj_buscar_nonce' );
 
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'aj_atendimentos';
-
-    $search_term = isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '';
-
-    $base_query = "FROM $table_name";
-    $where_clause = '';
-
-    if ( ! empty( $search_term ) ) {
-        $like_term = '%' . $wpdb->esc_like( $search_term ) . '%';
-        $where_clause = $wpdb->prepare(
-            " WHERE (assunto LIKE %s OR socios LIKE %s OR protocolo LIKE %s OR advogados LIKE %s)",
-            $like_term, $like_term, $like_term, $like_term
-        );
-    } else {
-        // Se a busca for vazia, retorna os do mês atual (comportamento padrão)
-        $where_clause = $wpdb->prepare(
-            " WHERE MONTH(data_atendimento) = MONTH(CURDATE()) AND YEAR(data_atendimento) = YEAR(CURDATE())"
-        );
-    }
-
-    $query = "SELECT * $base_query $where_clause ORDER BY id DESC";
-    $atendimentos = $wpdb->get_results( $query );
+    // Os argumentos da busca são passados para a função do Model.
+    $search_args = [
+        's'               => isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '',
+        'adv_socio'       => isset( $_POST['adv_socio'] ) ? sanitize_text_field( $_POST['adv_socio'] ) : '',
+        'adv_advogado'    => isset( $_POST['adv_advogado'] ) ? sanitize_text_field( $_POST['adv_advogado'] ) : '',
+        'adv_tipo'        => isset( $_POST['adv_tipo'] ) ? sanitize_text_field( $_POST['adv_tipo'] ) : '',
+        'adv_status'      => isset( $_POST['adv_status'] ) ? sanitize_text_field( $_POST['adv_status'] ) : '',
+        'adv_data_inicio' => isset( $_POST['adv_data_inicio'] ) ? sanitize_text_field( $_POST['adv_data_inicio'] ) : '',
+        'adv_data_fim'    => isset( $_POST['adv_data_fim'] ) ? sanitize_text_field( $_POST['adv_data_fim'] ) : '',
+    ];
+    $atendimentos = aj_search_atendimentos( $search_args );
 
     // Formata os dados para o front-end
     $data_to_send = [];

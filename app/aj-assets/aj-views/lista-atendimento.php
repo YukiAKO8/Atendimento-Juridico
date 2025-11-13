@@ -3,10 +3,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $wpdb;
-$table_name = $wpdb->prefix . 'aj_atendimentos';
-$query = "SELECT id, assunto, protocolo, advogados, socios, data_atendimento, status, tipo_atendimento FROM {$table_name} ORDER BY data_atendimento DESC";
-$atendimentos = $wpdb->get_results( $query );
+// Prepara os argumentos para a busca inicial (se houver filtros na URL)
+$initial_search_args = [
+    's'               => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '',
+    'adv_socio'       => isset( $_GET['adv_socio'] ) ? sanitize_text_field( $_GET['adv_socio'] ) : '',
+    'adv_advogado'    => isset( $_GET['adv_advogado'] ) ? sanitize_text_field( $_GET['adv_advogado'] ) : '',
+    'adv_tipo'        => isset( $_GET['adv_tipo'] ) ? sanitize_text_field( $_GET['adv_tipo'] ) : '',
+    'adv_status'      => isset( $_GET['adv_status'] ) ? sanitize_text_field( $_GET['adv_status'] ) : '',
+    'adv_data_inicio' => isset( $_GET['adv_data_inicio'] ) ? sanitize_text_field( $_GET['adv_data_inicio'] ) : '',
+    'adv_data_fim'    => isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET['adv_data_fim'] ) : '',
+];
+
+// Carrega os atendimentos iniciais usando a função de busca do Model
+$atendimentos = aj_search_atendimentos( $initial_search_args );
 
 $add_new_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'new' ] );
 
@@ -116,15 +125,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                         $edit_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'id' => $atendimento->id ] );
                         $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ] );
                     ?>
-                    <tr class="aj-card-row" 
-                        data-id="<?php echo esc_attr( $atendimento->id ); ?>"
-                        data-assunto="<?php echo esc_attr( $atendimento->assunto ); ?>"
-                        data-protocolo="<?php echo esc_attr( $atendimento->protocolo ); ?>"
-                        data-advogados="<?php echo esc_attr( $atendimento->advogados ); ?>"
-                        data-socios="<?php echo esc_attr( $atendimento->socios ); ?>"
-                        data-data_atendimento="<?php echo esc_attr( $atendimento->data_atendimento ); ?>"
-                        data-status="<?php echo esc_attr( $atendimento->status ); ?>"
-                        data-tipo_atendimento="<?php echo esc_attr( $atendimento->tipo_atendimento ); ?>">
+                    <tr class="aj-card-row">
                         <td class="id column-id" data-label="ID"><?php echo esc_html( $atendimento->id ); ?></td>
                         <td class="assunto column-assunto" data-label="Assunto">
                             <strong><a class="row-title" href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $atendimento->assunto ); ?></a></strong>

@@ -196,183 +196,157 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // --- LÓGICA DA LISTA DE ATENDIMENTOS (CLIENT-SIDE) ---
+    // --- LÓGICA DA LISTA DE ATENDIMENTOS (PESQUISA HÍBRIDA) ---
 
-    var allAtendimentos = []; // Armazena todos os atendimentos carregados da página
-    var displayedAtendimentos = []; // Armazena os atendimentos atualmente filtrados e exibidos
-    var itemsPerPage = 8; // Quantidade de itens por página
-    var currentPage = 1; // Página atual
+    var currentResults = []; // Armazena os resultados da última busca (avançada ou inicial)
 
     /**
-     * Renderiza os atendimentos para a página especificada.
+     * Renderiza a lista de atendimentos na tabela.
+     * @param {Array} atendimentos - Array de objetos de atendimento para exibir.
      */
-    function renderPage(page) {
-        currentPage = page;
-        var startIndex = (currentPage - 1) * itemsPerPage;
-        var endIndex = startIndex + itemsPerPage;
-
+    function renderAtendimentos(atendimentos) {
         const $tbody = $('#the-list');
-        let $noItemsRow = $tbody.find('.no-items');
+        $tbody.empty(); // Limpa a tabela antes de adicionar novos resultados
 
-        // Esconde todos os atendimentos (todos os elementos que foram carregados inicialmente)
-        allAtendimentos.forEach(function(item) {
-            item.element.hide();
-        });
-
-        if (displayedAtendimentos.length === 0) {
-            if ($noItemsRow.length === 0) {
-                $tbody.append('<tr class="no-items"><td class="colspanchange" colspan="8">Nenhum atendimento encontrado.</td></tr>');
-                $noItemsRow = $tbody.find('.no-items'); // Get reference to the newly added row
-            }
-            $noItemsRow.show();
+        if (atendimentos && atendimentos.length > 0) {
+            atendimentos.forEach(function(item) {
+                const statusClass = 'aj-status-' + item.status.toLowerCase().replace(/ /g, '-');
+                const rowHtml = `
+                    <tr class="aj-card-row">
+                        <td class="id column-id" data-label="ID">${item.id}</td>
+                        <td class="assunto column-assunto" data-label="Assunto">
+                            <strong><a class="row-title" href="${item.edit_url}">${item.assunto}</a></strong>
+                        </td>
+                        <td class="protocolo column-protocolo" data-label="Protocolo">${item.protocolo}</td>
+                        <td class="advogado column-advogado" data-label="Advogado">${item.advogados}</td>
+                        <td class="socio column-socio" data-label="Sócio">${item.socios}</td>
+                        <td class="data column-data" data-label="Data">${item.data_formatada}</td>
+                        <td class="status column-status" data-label="Status">
+                            <span class="aj-status-badge ${statusClass}">${item.status}</span>
+                        </td>
+                        <td class="actions column-actions" data-label="Ações">
+                            <div class="aj-actions-container">
+                                <button class="aj-actions-button dashicons dashicons-ellipsis"></button>
+                                <div class="aj-actions-dropdown" style="display: none;">
+                                    <ul>
+                                        <li><a href="#"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
+                                        <li><a href="#"><span class="dashicons dashicons-redo"></span> Converter em processo</a></li>
+                                        <li class="aj-submenu-container">
+                                            <a href="#"><span class="dashicons dashicons-portfolio"></span> Documentos <span class="dashicons dashicons-arrow-left-alt2"></span></a>
+                                            <div class="aj-actions-submenu">
+                                                <ul>
+                                                    <li><a href="#"><span class="dashicons dashicons-printer"></span> Resumo</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-text-page"></span> Comprovante</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-whatsapp"></span> Enviar Via Whatsapp</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-admin-users"></span> Procuração</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-businessman"></span> Procuração Advogado</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-money-alt"></span> Contratos Honorarios</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-text-page"></span> Declaração Pobreza</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-admin-home"></span> Declaração Residencia</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-groups"></span> Acordo Extrajudicial</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="aj-submenu-container">
+                                            <a href="#"><span class="dashicons dashicons-admin-generic"></span> Ações <span class="dashicons dashicons-arrow-left-alt2"></span></a>
+                                            <div class="aj-actions-submenu">
+                                                <ul>
+                                                    <li><a href="${item.edit_url}"><span class="dashicons dashicons-edit"></span> Editar</a></li>
+                                                    <li><a href="${item.view_url}" class="aj-action-view"><span class="dashicons dashicons-visibility"></span> Visualizar</a></li>
+                                                    <li><a href="#" class="aj-action-delete" data-id="${item.id}"><span class="dashicons dashicons-trash"></span> Excluir</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                $tbody.append(rowHtml);
+            });
         } else {
-            $noItemsRow.hide();
+            $tbody.append('<tr class="no-items"><td class="colspanchange" colspan="8">Nenhum atendimento encontrado.</td></tr>');
         }
-
-        // Mostra apenas as linhas para a página atual
-        var pageItems = displayedAtendimentos.slice(startIndex, endIndex);
-        pageItems.forEach(function(item) {
-            item.element.show();
-        });
-
-        updatePagination(currentPage); // Corrected function call
     }
 
     /**
-     * Renderiza os controles de paginação.
+     * Realiza a busca AVANÇADA via AJAX e atualiza a tabela.
      */
-    function updatePagination(currentPage) {
-        var totalItems = displayedAtendimentos.length;
-        var totalPages = Math.ceil(totalItems / itemsPerPage);
-        var $paginationContainer = $('#aj-pagination-container');
-        var paginationHtml = '';
-
-        if (totalPages > 1) {
-            paginationHtml += '<div class="aj-pagination">';
-            if (currentPage > 1) {
-                paginationHtml += `<a href="#" class="aj-page-nav prev-page" data-page="${currentPage - 1}">&lt;</a>`;
-            }
-            paginationHtml += `<span class="aj-page-current">${currentPage}</span>`;
-            if (currentPage < totalPages) {
-                paginationHtml += `<a href="#" class="aj-page-nav next-page" data-page="${currentPage + 1}">&gt;</a>`;
-            }
-            paginationHtml += '</div>';
-        }
-
-        $paginationContainer.html(paginationHtml);
-    }
-
-    /**
-     * Atualiza a lista de exibição com base nos filtros e renderiza a primeira página.
-     */
-    function updateDisplay(filteredItems) {
-        displayedAtendimentos = filteredItems;
-        renderPage(1);
-    }
-
-    /**
-     * Filtra os atendimentos com base nos valores dos campos de busca.
-     */
-    function filterAndDisplay() {
+    function performAdvancedSearch() {
         // Efeito de loading
         $('#the-list').css('opacity', 0.5);
 
-        // Coleta os valores dos filtros
-        const searchTerm = $('#aj-search-input').val().toLowerCase();
-        const dataInicio = $('#adv_data_inicio').val();
-        const dataFim = $('#adv_data_fim').val();
-        const status = $('#adv_status').val();
-        const tipo = $('#adv_tipo').val();
-        const advogado = $('#adv_advogado').val().toLowerCase();
-        const socio = $('#adv_socio').val().toLowerCase();
+        // Coleta todos os dados do formulário
+        const formData = $('#aj-search-form').serialize();
+        const requestData = formData + '&action=aj_buscar_atendimentos&_ajax_nonce=' + aj_object.search_nonce;
 
-        const isAdvancedSearch = dataInicio || dataFim || status || tipo || advogado || socio;
-
-        let filtered = allAtendimentos.filter(function(item) {
-            const itemData = item.data;
-
-            // Filtro de busca simples
-            if (searchTerm && !(
-                itemData.assunto.toLowerCase().includes(searchTerm) ||
-                itemData.socios.toLowerCase().includes(searchTerm) ||
-                itemData.protocolo.toLowerCase().includes(searchTerm) ||
-                itemData.advogados.toLowerCase().includes(searchTerm)
-            )) {
-                return false;
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: requestData,
+            success: function(response) {
+                if (response.success) {
+                    currentResults = response.data; // Armazena os resultados para o filtro simples
+                    renderAtendimentos(currentResults);
+                    // Exibe a notificação de resultados
+                    const $notice = $('#aj-results-notice');
+                    const message = `${response.data.length} resultado(s) encontrado(s).`;
+                    $notice.text(message).show();
+                } else {
+                    alert('Erro ao buscar atendimentos: ' + response.data.message);
+                }
+            },
+            error: function() {
+                alert('Ocorreu um erro de comunicação. Tente novamente.');
+            },
+            complete: function() {
+                // Remove efeito de loading
+                $('#the-list').css('opacity', 1);
             }
-
-            // Filtros avançados
-            if (dataInicio && itemData.data_atendimento < dataInicio + ' 00:00:00') return false;
-            if (dataFim && itemData.data_atendimento > dataFim + ' 23:59:59') return false;
-            if (status && itemData.status !== status) return false;
-            if (tipo && itemData.tipo_atendimento !== tipo) return false;
-            if (advogado && !itemData.advogados.toLowerCase().includes(advogado)) return false;
-            if (socio && !itemData.socios.toLowerCase().includes(socio)) return false;
-
-            return true;
         });
-
-        // Exibe a notificação de resultados
-        const $notice = $('#aj-results-notice');
-        if (isAdvancedSearch || searchTerm) {
-            const message = `${filtered.length} resultado(s) encontrado(s).`;
-            $notice.text(message).show();
-        } else {
-            $notice.hide();
-        }
-
-        updateDisplay(filtered);
-
-        // Remove efeito de loading
-        $('#the-list').css('opacity', 1);
     }
 
     // --- EVENTOS ---
 
-    // Paginação
-    $(document).on('click', '.aj-page-nav', function(e) {
-        e.preventDefault();
-        const page = parseInt($(this).data('page'));
-        renderPage(page);
-    });
-
-    // Busca (simples e avançada)
+    // Busca AVANÇADA (ao submeter o formulário)
     $('#aj-search-form').on('submit', function(e) {
         e.preventDefault();
-        filterAndDisplay();
+        performAdvancedSearch();
+    });
+
+    // Busca SIMPLES (filtra os resultados já exibidos, sem ir ao servidor)
+    $('#aj-search-input').on('keyup', function() {
+        const searchTerm = $(this).val().toLowerCase();
+
+        if (!searchTerm) {
+            renderAtendimentos(currentResults); // Se a busca estiver vazia, mostra todos os resultados atuais
+            return;
+        }
+
+        const filteredResults = currentResults.filter(function(item) {
+            return (
+                item.assunto.toLowerCase().includes(searchTerm) ||
+                item.socios.toLowerCase().includes(searchTerm) ||
+                item.protocolo.toLowerCase().includes(searchTerm) ||
+                item.advogados.toLowerCase().includes(searchTerm)
+            );
+        });
+
+        renderAtendimentos(filteredResults);
     });
 
     // Limpar Filtros
     $('.aj-clear-filters-btn').on('click', function() {
         $('#aj-search-form')[0].reset();
         $('#aj-results-notice').hide();
-        
-        // Filtra pelo mês atual como padrão
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-
-        let monthFiltered = allAtendimentos.filter(function(item) {
-            const itemDate = new Date(item.data.data_atendimento);
-            return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
-        });
-
-        updateDisplay(monthFiltered);
+        performAdvancedSearch(); // Realiza a busca padrão (mês atual) no servidor
     });
 
     // --- INICIALIZAÇÃO ---
     $(window).on('load', function() {
-        // 1. Carrega todos os atendimentos do DOM para o array JS
-        $('.aj-card-row').each(function(index) {
-            const element = $(this);
-            allAtendimentos.push({
-                element: element,
-                data: element.data()
-            });
-        });
-
-        // 2. Dispara o "Limpar Filtros" para aplicar o filtro inicial do mês corrente
-        $('.aj-clear-filters-btn').trigger('click');
+        // Realiza a busca inicial ao carregar a página (que por padrão trará o mês atual)
+        performAdvancedSearch();
     });
 
 });
