@@ -48,20 +48,10 @@ function aj_criar_tabela_atendimentos() {
         KEY alterado_por (alterado_por)
     ) $charset_collate;";
 
-    // Inclui o arquivo necessário para a função dbDelta.
+   
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     
-    // Executa a query para criar a tabela.
-    // A função dbDelta verifica se a tabela já existe e a atualiza se necessário.
+    
     dbDelta( $sql );
 }
 
-/**
- * Função para ser chamada na desativação do plugin (opcional).
- * Pode ser usada para limpar a tabela, se desejado.
- */
-// function aj_remover_tabela_atendimentos() {
-//     global $wpdb;
-//     $table_name = $wpdb->prefix . 'aj_atendimentos';
-//     $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
-// }

@@ -213,6 +213,9 @@ function aj_render_admin_page() {
 <br>
 
             </form>
+            
+            <!-- Botão flutuante para o manual de ajuda -->
+            <a href="<?php echo esc_url( plugin_dir_url( dirname( __FILE__, 2 ) ) . 'app/aj-assets/manual-sistema.pdf' ); ?>" download="manual-sistema.pdf" class="aj-fab-help dashicons dashicons-editor-help" title="Manual do Sistema"></a>
             </div> <!-- Fim do .aj-form-wrapper -->
         </div>
         <?php

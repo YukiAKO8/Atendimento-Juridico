@@ -105,6 +105,8 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
             </div>
         </div>
 
+    </form> <!-- Fim do formulário de pesquisa -->
+
     <div id="aj-results-notice" class="aj-search-results-notice" style="display: none;"></div>
 
     <div class="aj-form-container"> <!-- Adicionando o container para o estilo -->
@@ -148,7 +150,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                         </td>
                         <td class="actions column-actions" data-label="Ações">
                             <div class="aj-actions-container">
-                                <button class="aj-actions-button dashicons dashicons-ellipsis"></button>
+                                <button type="button" class="aj-actions-button dashicons dashicons-ellipsis" title="Ações"></button>
                                 <div class="aj-actions-dropdown" style="display: none;">
                                     <ul>
                                         <li><a href="#"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
@@ -202,5 +204,8 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
 
     </div> <!-- Fim do .aj-form-container -->
     <!-- Botão flutuante para adicionar novo atendimento -->
-    <a href="<?php echo esc_url( $add_new_url ); ?>" class="aj-fab-add-new dashicons dashicons-plus-alt"></a>
+    <a href="<?php echo esc_url( $add_new_url ); ?>" class="aj-fab-add-new dashicons dashicons-plus-alt" title="Adicionar novo atendimento"></a>
+
+    <!-- Botão flutuante para o manual de ajuda -->
+    <a href="<?php echo esc_url( plugin_dir_url( dirname( __FILE__, 3 ) ) . 'app/aj-assets/manual-sistema.pdf' ); ?>" download="manual-sistema.pdf" class="aj-fab-help dashicons dashicons-editor-help" title="Manual do Sistema"></a>
 </div>

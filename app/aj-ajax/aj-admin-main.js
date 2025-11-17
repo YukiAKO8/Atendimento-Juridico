@@ -227,7 +227,7 @@ jQuery(document).ready(function($) {
                         </td>
                         <td class="actions column-actions" data-label="Ações">
                             <div class="aj-actions-container">
-                                <button class="aj-actions-button dashicons dashicons-ellipsis"></button>
+                                <button type="button" class="aj-actions-button dashicons dashicons-ellipsis" title="Ações"></button>
                                 <div class="aj-actions-dropdown" style="display: none;">
                                     <ul>
                                         <li><a href="#"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
@@ -291,7 +291,7 @@ jQuery(document).ready(function($) {
 
         // Seta "Anterior"
         if (currentPage > 1) {
-            paginationHtml += `<a href="#" class="aj-page-nav aj-page-prev" data-page="${currentPage - 1}"><span class="dashicons dashicons-arrow-left-alt2"></span></a>`;
+            paginationHtml += `<a href="#" class="aj-page-nav aj-page-prev" data-page="${currentPage - 1}" title="Página Anterior"><span class="dashicons dashicons-arrow-left-alt2"></span></a>`;
         } else {
             paginationHtml += `<span class="aj-page-nav aj-page-disabled"><span class="dashicons dashicons-arrow-left-alt2"></span></span>`;
         }
@@ -301,7 +301,7 @@ jQuery(document).ready(function($) {
 
         // Seta "Próximo"
         if (currentPage < totalPages) {
-            paginationHtml += `<a href="#" class="aj-page-nav aj-page-next" data-page="${currentPage + 1}"><span class="dashicons dashicons-arrow-right-alt2"></span></a>`;
+            paginationHtml += `<a href="#" class="aj-page-nav aj-page-next" data-page="${currentPage + 1}" title="Próxima Página"><span class="dashicons dashicons-arrow-right-alt2"></span></a>`;
         } else {
             paginationHtml += `<span class="aj-page-nav aj-page-disabled"><span class="dashicons dashicons-arrow-right-alt2"></span></span>`;
         }
@@ -313,8 +313,9 @@ jQuery(document).ready(function($) {
     /**
      * Realiza a busca AVANÇADA via AJAX e atualiza a tabela.
      * @param {number} page - O número da página a ser buscada.
+     * @param {boolean} showNotice - Se a notificação de resultados deve ser exibida.
      */
-    function performAdvancedSearch(page = 1) {
+    function performAdvancedSearch(page = 1, showNotice = true) {
         currentPage = page; // Atualiza a página atual
 
         // Efeito de loading
@@ -339,15 +340,17 @@ jQuery(document).ready(function($) {
                     // Renderiza a paginação com base no total de itens e na página atual
                     renderPagination(response.data.total, 8, currentPage);
 
-                    // Exibe a notificação de resultados
-                    const $notice = $('#aj-results-notice');
-                    const message = `${response.data.total} resultado(s) encontrado(s).`; // Usa response.data.total
-                    $notice.text(message).fadeIn(); // Efeito fadeIn
+                    if (showNotice) {
+                        // Exibe a notificação de resultados
+                        const $notice = $('#aj-results-notice');
+                        const message = `${response.data.total} resultado(s) encontrado(s).`; // Usa response.data.total
+                        $notice.text(message).fadeIn(); // Efeito fadeIn
 
-                    // Oculta a notificação após 5 segundos
-                    setTimeout(function() {
-                        $notice.fadeOut('slow'); // Efeito fadeOut
-                    }, 3000); // 3000 milissegundos = 3 segundos
+                        // Oculta a notificação após 3 segundos
+                        setTimeout(function() {
+                            $notice.fadeOut('slow'); // Efeito fadeOut
+                        }, 3000);
+                    }
                 } else {
                     alert('Erro ao buscar atendimentos: ' + response.data.message);
                 }
@@ -367,7 +370,7 @@ jQuery(document).ready(function($) {
     // Busca AVANÇADA (ao submeter o formulário ou ao clicar nos botões de paginação)
     $('#aj-search-form').on('submit', function(e) {
         e.preventDefault();
-        performAdvancedSearch(1); // Sempre volta para a primeira página ao fazer uma nova busca
+        performAdvancedSearch(1, true); // Nova busca, mostra a notificação.
     });
 
     // A busca simples (keyup) agora também vai ao servidor para consistência com a paginação.
@@ -381,14 +384,14 @@ jQuery(document).ready(function($) {
     $('.aj-clear-filters-btn').on('click', function() {
         $('#aj-search-form')[0].reset();
         $('#aj-results-notice').hide();
-        performAdvancedSearch(1); // Realiza a busca padrão no servidor
+        performAdvancedSearch(1, true); // Nova busca, mostra a notificação.
     });
 
     // Evento para cliques na paginação
     $(document).on('click', '.aj-page-nav', function(e) {
         e.preventDefault();
         const page = $(this).data('page');
-        performAdvancedSearch(page);
+        performAdvancedSearch(page, false); // Troca de página, não mostra a notificação.
         $('html, body').animate({ scrollTop: $('.aj-list-page-wrapper').offset().top }, 300); // Rola para o topo da lista
     });
 
