@@ -663,18 +663,18 @@
 /* --- Estilo Moderno para a Lista de Atendimentos (Cards) --- */
 
 /* Esconde o cabeçalho tradicional da tabela */
-.aj-form-container .wp-list-table thead th {
+.aj-list-page-wrapper .wp-list-table thead th {
     display: none;
 }
 
 /* Remove bordas e espaçamentos da tabela */
-.aj-form-container .wp-list-table {
+.aj-list-page-wrapper .wp-list-table {
     border-spacing: 0;
     border-collapse: collapse;
 }
 
 /* Transforma cada linha (tr) em um card */
-.aj-card-row {
+.aj-list-page-wrapper .aj-card-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Layout responsivo */
     gap: 15px 20px;
@@ -686,13 +686,13 @@
     transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.aj-card-row:not(.actions-menu-open):hover {
+.aj-list-page-wrapper .aj-card-row:not(.actions-menu-open):hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Estiliza cada célula (td) dentro do card */
-.aj-card-row td {
+.aj-list-page-wrapper .aj-card-row td {
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -702,7 +702,7 @@
 }
 
 /* Adiciona o rótulo (do data-label) antes do conteúdo da célula */
-.aj-card-row td::before {
+.aj-list-page-wrapper .aj-card-row td::before {
     content: attr(data-label);
     font-size: 11px;
     font-weight: 600;
@@ -712,20 +712,20 @@
 }
 
 /* Ajustes específicos para colunas */
-.aj-card-row .column-assunto .row-title {
+.aj-list-page-wrapper .aj-card-row .column-assunto .row-title {
     font-size: 15px;
     font-weight: 600;
     color: #005a9c;
 }
 
-.aj-card-row .column-actions {
+.aj-list-page-wrapper .aj-card-row .column-actions {
     grid-row: 1; /* Move para a primeira linha */
     grid-column: -1; /* Alinha no canto direito */
     justify-self: flex-end;
     align-items: center; /* Centraliza o botão horizontalmente na sua coluna */
 }
 
-.aj-card-row .column-actions::before {
+.aj-list-page-wrapper .aj-card-row .column-actions::before {
     display: none; /* Esconde o rótulo "Ações" */
 }
 

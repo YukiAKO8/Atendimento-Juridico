@@ -43,16 +43,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             <div class="aj-form-container">
                 <div id="tab-content-dados" class="tab-content <?php echo $current_tab === 'dados' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-dados.php'; ?>
+                    <?php require_once __DIR__ . '/tela-dados.php'; ?>
                 </div>
                 <div id="tab-content-observacoes" class="tab-content <?php echo $current_tab === 'observacoes' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-outros.php'; ?>
+                    <?php require_once __DIR__ . '/tela-outros.php'; ?>
                 </div>
                 <div id="tab-content-documentos" class="tab-content <?php echo $current_tab === 'documentos' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-documentos.php'; ?>
+                    <?php require_once __DIR__ . '/tela-documentos.php'; ?>
                 </div>
                 <div id="tab-content-historico" class="tab-content <?php echo $current_tab === 'historico' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-historico.php'; ?>
+                    <?php require_once __DIR__ . '/tela-historico.php'; ?>
                 </div>
             </div>
 
