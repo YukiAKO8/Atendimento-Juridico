@@ -823,37 +823,6 @@
     border-color: #ddd;
 }
 
-/* Floating Action Button (FAB) para adicionar novo atendimento */
-.aj-fab-add-new {
-    position: fixed;
-    bottom: 30px; /* Mantém na direita */
-   
-    right: calc(2% - 20px); /* Ajustado 8px para fora */
-    width: 55px; /* Tamanho reduzido */
-    height: 55px; /* Tamanho reduzido */
-    border-radius: 50%;
-    background-color: #e7f5ff; /* Fundo azul clarinho */
-    color: #007cba; /* Ícone azul escuro */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px; /* Ícone um pouco menor */
-    border: 1px solid #bde0ff; /* Borda azul um pouco mais escura */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra mais leve */
-    z-index: 1000; /* Garante que fique acima de outros elementos */
-    text-decoration: none;
-    animation: float-fab 3s infinite ease-in-out; /* Animação de flutuação */
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.aj-fab-add-new:hover {
-    background-color: #007cba; /* Fundo azul escuro no hover */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra um pouco mais pronunciada */
-    transform: translateY(-2px);
-    color: #fff; /* Ícone branco no hover */
-    animation-play-state: paused; /* Pausa a animação de pulso no hover */
-}
-
 /* Animação de flutuação para o botão */
 @keyframes float-fab {
     0% {
@@ -867,32 +836,106 @@
     }
 }
 
-/* Floating Action Button (FAB) para o botão de Ajuda */
-.aj-fab-help {
-    position: fixed;
-    bottom: 30px;
-    left: calc(10% - 10px); /* Mesma medida do botão da direita */
-    width: 55px;
-    height: 55px;
+/* Estilos movidos do aj-controller.php */
+
+/* Estilo do botão Gerar Relatório */
+#aj-generate-report-btn {
+    background-color: #ffffff !important;
+    border: 2px solid #8A2BE2 !important; /* Roxo */
+    color: #000000 !important; /* Preto */
+    border-radius: 20px !important;
+    padding: 10px 25px !important; /* Aumentado */
+    font-weight: bold !important;
+    font-size: 15px !important; /* Aumentado */
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+    height: auto !important;
+    line-height: normal !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+#aj-generate-report-btn:hover {
+    background-color: rgba(138, 43, 226, 0.1) !important; /* Roxo transparente */
+    color: #000000 !important;
+}
+
+/* Aplica a animação de balanço ao ícone da impressora no hover do botão */
+#aj-generate-report-btn:hover .dashicons-printer {
+    animation: shake-icon 0.5s ease-in-out;
+}
+
+/* Animação de balanço para ícones */
+@keyframes shake-icon {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+}
+/* --- Botões Flutuantes (FABs) --- */
+
+/* Adiciona position: relative ao container pai para posicionamento absoluto */
+.wrap.aj-list-page-wrapper {
+    position: relative;
+}
+
+.aj-fab-add-new {
+    position: absolute; /* Posicionamento absoluto dentro do container pai */
+    bottom: 30px; /* Distância da parte inferior do container */
+    right: 30px; /* Distância da direita do container */
+    width: 60px; /* Aumentado */
+    height: 60px; /* Aumentado */
     border-radius: 50%;
-    background-color: #fffbe6; /* Fundo amarelo clarinho */
-    color: #ffb900; /* Ícone amarelo escuro */
+    background-color: #e7f5ff;
+    color: #007cba;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px; /* Ícone um pouco maior para o '?' */
-    border: 1px solid #fff1b8; /* Borda amarela um pouco mais escura */
+    font-size: 30px; /* Aumentado */
+    border: 1px solid #bde0ff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     text-decoration: none;
     animation: float-fab 3s infinite ease-in-out;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.aj-fab-add-new:hover {
+    background-color: #007cba;
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation-play-state: paused;
 }
 
+.aj-fab-help {
+    position: absolute; /* Posicionamento absoluto dentro do container pai */
+    bottom: 30px; /* Mesma distância da parte inferior para alinhar horizontalmente */
+    right: 105px; /* Ajustado para manter o espaçamento */
+    width: 60px; /* Aumentado */
+    height: 60px; /* Aumentado */
+    border-radius: 50%;
+    background-color: #fffbe6;
+    color: #ffb900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px; /* Aumentado */
+    border: 1px solid #fff1b8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-decoration: none;
+    animation: float-fab 3s infinite ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
 .aj-fab-help:hover {
-    background-color: #ffb900; /* Fundo amarelo escuro no hover */
+    background-color: #ffb900;
+    color: #fff;
+    transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-    color: #fff; /* Ícone branco no hover */
     animation-play-state: paused;
+}
+
+/* Animação de flutuação para os botões FAB */
+@keyframes float-fab {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
 }

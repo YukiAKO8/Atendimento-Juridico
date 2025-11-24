@@ -100,6 +100,7 @@ function aj_search_atendimentos( $args = [] ) {
     $data_fim        = isset( $args['adv_data_fim'] ) ? $args['adv_data_fim'] : '';
     $page            = isset( $args['page'] ) ? absint( $args['page'] ) : 1;
     $per_page        = isset( $args['per_page'] ) ? absint( $args['per_page'] ) : 8; // Itens por página
+    $nopaging        = isset( $args['nopaging'] ) && $args['nopaging'];
     $offset          = ( $page - 1 ) * $per_page;
 
     $from_clause = "FROM $table_name";
@@ -155,10 +156,14 @@ function aj_search_atendimentos( $args = [] ) {
     $total = $wpdb->get_var( $wpdb->prepare( $total_query, $params ) );
 
     // Query para buscar os resultados da página atual
-    $main_query = "SELECT * " . $from_clause . $where_query . " ORDER BY id DESC LIMIT %d OFFSET %d";
-    $params[] = $per_page;
-    $params[] = $offset;
-    
+    $main_query = "SELECT * " . $from_clause . $where_query . " ORDER BY id DESC";
+
+    if ( ! $nopaging ) {
+        $main_query .= " LIMIT %d OFFSET %d";
+        $params[] = $per_page;
+        $params[] = $offset;
+    }
+
     $results = $wpdb->get_results( $wpdb->prepare( $main_query, $params ) );
 
     return [ 'results' => $results, 'total' => (int) $total ];

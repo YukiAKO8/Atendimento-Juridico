@@ -196,6 +196,171 @@ jQuery(document).ready(function($) {
         }
     }
 
+    // --- LÓGICA PARA GERAR RELATÓRIO ---
+    $(document).on('click', '#aj-generate-report-btn', function() {
+        const $button = $(this);
+        const originalText = $button.html();
+        $button.html('<span class="dashicons dashicons-update-alt spin"></span> Gerando...').prop('disabled', true);
+
+        const formData = $('#aj-search-form').serialize();
+        const requestData = formData + '&action=aj_gerar_relatorio&_ajax_nonce=' + aj_object.search_nonce;
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: requestData,
+            success: function(response) {
+                if (response.success) {
+                    generateReportHtml(response.data);
+                } else {
+                    alert('Erro ao gerar o relatório: ' + (response.data.message || 'Resposta inválida do servidor.'));
+                }
+            },
+            error: function() {
+                alert('Ocorreu um erro de comunicação ao gerar o relatório.');
+            },
+            complete: function() {
+                $button.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+
+    /**
+     * Gera um PDF de texto real com os dados do relatório e abre em uma pré-visualização.
+     * @param {object} reportData - Os dados do relatório (atendimentos e estatísticas).
+     */
+    function generateReportHtml(reportData) {
+        const { data, stats } = reportData;
+        const { jsPDF } = window.jspdf; // Importa o construtor do jsPDF
+
+        // Cria um novo documento PDF no formato A4
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        // Encontra o item com a maior contagem em um objeto de contagem
+        const findMax = (obj) => Object.keys(obj).length ? Object.entries(obj).reduce((a, b) => obj[a[0]] > obj[b[0]] ? a : b)[0] : 'N/A';
+
+        // --- CABEÇALHO DO DOCUMENTO ---
+        doc.setFontSize(18);
+        doc.text('Relatório de Atendimentos', 14, 22);
+        doc.setFontSize(11);
+        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 29);
+
+        // --- SEÇÃO DE RESUMO ---
+        const resumoBody = [
+            ['Total de Atendimentos', stats.total],
+            ['Advogado com mais atendimentos', `${findMax(stats.advogado_counts)} (${stats.advogado_counts[findMax(stats.advogado_counts)] || 0})`],
+            ['Horário de pico', `${findMax(stats.horario_counts)} (${stats.horario_counts[findMax(stats.horario_counts)] || 0})`],
+            ['Tipo mais comum', `${findMax(stats.tipo_counts)} (${stats.tipo_counts[findMax(stats.tipo_counts)] || 0})`],
+        ];
+
+        // Adiciona a tabela de resumo
+        doc.autoTable({
+            startY: 40,
+            head: [['Resumo Geral', '']],
+            body: resumoBody,
+            theme: 'striped',
+            headStyles: { fillColor: [41, 128, 185] },
+        });
+
+        // Adiciona a lista de status separadamente
+        const statusText = Object.entries(stats.status_counts).map(([status, count]) => `${status}: ${count}`).join(' | ');
+        doc.autoTable({
+            startY: doc.autoTable.previous.finalY + 2,
+            head: [['Atendimentos por Status', '']],
+            body: [[statusText]],
+            theme: 'grid',
+        });
+
+        // --- TABELA PRINCIPAL DE ATENDIMENTOS ---
+        const tableHeaders = ['ID', 'Assunto', 'Protocolo', 'Sócio(s)', 'Advogado(s)', 'Data', 'Status'];
+        const tableBody = data.map(item => [
+            item.id,
+            item.assunto,
+            item.protocolo,
+            item.socios,
+            item.advogados,
+            item.data_formatada,
+            item.status
+        ]);
+
+        doc.autoTable({
+            startY: doc.autoTable.previous.finalY + 10,
+            head: [tableHeaders],
+            body: tableBody,
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] },
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 10 }, // ID
+                1: { cellWidth: 'auto' }, // Assunto
+                2: { cellWidth: 30 }, // Protocolo
+                3: { cellWidth: 25 }, // Sócio
+                4: { cellWidth: 25 }, // Advogado
+                5: { cellWidth: 25 }, // Data
+                6: { cellWidth: 25 }  // Status
+            }
+        });
+
+        // --- GERAÇÃO DA PRÉ-VISUALIZAÇÃO ---
+        const blobUrl = doc.output('bloburl');
+        const filename = `relatorio_atendimentos_${new Date().toISOString().slice(0,10)}.pdf`;
+
+        const previewHtml = `
+                <!DOCTYPE html>
+                <html lang="pt-BR">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Pré-visualização do Relatório</title>
+                    <style>
+                        body { margin: 0; padding: 0; font-family: sans-serif; background-color: #525659; display: flex; flex-direction: column; height: 100vh; }
+                        .preview-header { background-color: #32373c; color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
+                        .preview-header h2 { margin: 0; font-size: 1.2em; }
+                        .preview-actions button { background-color: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-size: 14px; margin-left: 10px; }
+                        .preview-actions button:hover { background-color: #2980b9; }
+                        .preview-actions .print-btn { background-color: #95a5a6; }
+                        .preview-actions .print-btn:hover { background-color: #7f8c8d; }
+                        .preview-body { flex-grow: 1; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <div class="preview-header">
+                        <h2>Pré-visualização do Relatório</h2>
+                        <div class="preview-actions">
+                            <button id="print-btn" class="print-btn">Imprimir</button>
+                            <button id="download-btn">Baixar PDF</button>
+                        </div>
+                    </div>
+                    <div class="preview-body">
+                        <iframe src="${blobUrl}" type="application/pdf"></iframe>
+                    </div>
+                    <script>
+                        document.getElementById('download-btn').addEventListener('click', function() {
+                            const link = document.createElement('a');
+                            link.href = '${blobUrl}';
+                            link.download = '${filename}';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        });
+                        document.getElementById('print-btn').addEventListener('click', function() {
+                            const iframe = document.querySelector('iframe');
+                            iframe.contentWindow.print();
+                        });
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+        const previewWindow = window.open('', '_blank');
+        previewWindow.document.write(previewHtml);
+        previewWindow.document.close();
+    }
+
     // --- LÓGICA DA LISTA DE ATENDIMENTOS (PESQUISA HÍBRIDA) ---
 
     var currentResults = []; // Armazena os resultados da última busca (avançada ou inicial)

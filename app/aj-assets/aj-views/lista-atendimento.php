@@ -200,7 +200,11 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
         </tfoot>
     </table>
 
-    <div id="aj-pagination-container"></div>
+    <div class="aj-list-footer">
+        <div id="aj-pagination-container"></div>
+        <button type="button" id="aj-generate-report-btn" class="button button-primary"><span class="dashicons dashicons-printer"></span> Gerar Relatório</button>
+    </div>
+
 
     </div> <!-- Fim do .aj-form-container -->
     <!-- Botão flutuante para adicionar novo atendimento -->

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function aj_get_current_tab() {
     // Lista de abas permitidas para segurança.
-    $allowed_tabs = array( 'dados', 'observacoes', 'documentos' );
+    $allowed_tabs = array( 'dados', 'observacoes', 'documentos', 'historico' );
     $current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'dados';
 
     return in_array( $current_tab, $allowed_tabs ) ? $current_tab : 'dados';
@@ -83,142 +83,26 @@ function aj_render_admin_page() {
     $action = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
     $is_readonly = ( $action === 'view' );
 
-    if ( $atendimento_id > 0 || $action === 'new' ) {
-       
 
-   
+    if ( $atendimento_id > 0 || $action === 'new' ) {
+        // --- Lógica do Controller: Preparar os dados ---
         $atendimento = null;
         $cadastrado_por_user = null;
         $alterado_por_user = null;
 
         if ( $atendimento_id > 0 ) {
-
             $atendimento = aj_get_atendimento_by_id( $atendimento_id );
-
-         
-            if ( ! $atendimento ) {
-                wp_die( 'Atendimento não encontrado.' );
-            }
-
-      
-            if ( $atendimento->cadastrado_por ) {
-                $cadastrado_por_user = get_userdata( $atendimento->cadastrado_por );
-            }
-            if ( $atendimento->alterado_por ) {
-                $alterado_por_user = get_userdata( $atendimento->alterado_por );
-            }
+            if ( ! $atendimento ) { wp_die( 'Atendimento não encontrado.' ); }
+            if ( $atendimento->cadastrado_por ) { $cadastrado_por_user = get_userdata( $atendimento->cadastrado_por ); }
+            if ( $atendimento->alterado_por ) { $alterado_por_user = get_userdata( $atendimento->alterado_por ); }
         } else {
-         
-            $atendimento = (object) [
-                'id' => 0,
-                'protocolo' => aj_generate_unique_protocol(),
-                'cadastrado_por' => null,
-                'data_cadastro' => null,
-                'alterado_por' => null,
-                'data_alteracao' => null,
-            ];
+            $atendimento = (object) [ 'id' => 0, 'protocolo' => aj_generate_unique_protocol() ];
         }
 
-     
         $current_tab = aj_get_current_tab();
-     
-        $current_user = wp_get_current_user();
-        ?>
-        <div class="wrap">
-            <div class="aj-form-wrapper"> <!-- Container para centralização -->
-                <br>
-                <br>
-                <br>
-                <br>
-                <h1>
-                    <?php 
-                        if ($is_readonly) { echo 'Visualizar Atendimento'; }
-                        elseif ($atendimento_id > 0) { echo 'Editar Atendimento'; }
-                        else { echo 'Adicionar Novo Atendimento'; }
-                    ?>
-                </h1>
-                <br>
-                <br>
-                <br>
-                <br>
-    
-            <form id="aj-main-form" method="post">
-                <?php wp_nonce_field( 'aj_salvar_atendimento', 'aj_atendimento_nonce' ); ?>
-
-            <nav class="aj-nav-tab-wrapper">
-                <?php
-                   
-                    $base_tab_url_params = [ 'page' => 'atendimento-juridico' ];
-                    if ( $atendimento_id > 0 ) {
-                        $base_tab_url_params['id'] = $atendimento_id;
-                    } elseif ( $action === 'new' ) {
-                        $base_tab_url_params['action'] = 'new';
-                    }
-            
-                    $base_url = esc_url(add_query_arg($base_tab_url_params));
-                ?>
-                <div data-tab="dados" data-url="<?php echo esc_url(add_query_arg(['tab' => 'dados'], $base_url)); ?>" class="nav-tab nav-tab-dados <?php echo $current_tab == 'dados' ? 'nav-tab-active' : ''; ?>">Dados</div>
-                <div data-tab="observacoes" data-url="<?php echo esc_url(add_query_arg(['tab' => 'observacoes'], $base_url)); ?>" class="nav-tab nav-tab-observacoes <?php echo $current_tab == 'observacoes' ? 'nav-tab-active' : ''; ?>">Observações</div>
-                <div data-tab="documentos" data-url="<?php echo esc_url(add_query_arg(['tab' => 'documentos'], $base_url)); ?>" class="nav-tab nav-tab-documentos <?php echo $current_tab == 'documentos' ? 'nav-tab-active' : ''; ?>">Documentos</div>
-            </nav>
-
-            <div class="aj-form-container">
-                <div id="tab-content-dados" class="tab-content <?php echo $current_tab === 'dados' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-dados.php'; ?>
-                </div>
-                <div id="tab-content-observacoes" class="tab-content <?php echo $current_tab === 'observacoes' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-outros.php'; ?>
-                </div>
-                <div id="tab-content-documentos" class="tab-content <?php echo $current_tab === 'documentos' ? 'active' : ''; ?>">
-                    <?php require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-documentos.php'; ?>
-                </div>
-            </div>
-
-          
-            <div class="aj-meta-container">
-                <?php if ( $atendimento_id > 0 && $atendimento ) :  ?>
-                    <span class="meta-item">
-                        <strong>Cadastrado por:</strong> 
-                        <span id="aj_cadastrado_por"><?php echo $cadastrado_por_user ? esc_html( $cadastrado_por_user->display_name ) : 'N/A'; ?></span>
-                    </span>
-                    <span class="meta-item">
-                        <strong>Data do cadastro:</strong> 
-                        <span id="aj_data_cadastro"><?php echo $atendimento->data_cadastro ? esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_cadastro ) ) ) : 'N/A'; ?></span>
-                    </span>
-                    <span class="meta-item">
-                        <strong>Alterado por:</strong> 
-                        <span id="aj_alterado_por"><?php echo $alterado_por_user ? esc_html( $alterado_por_user->display_name ) : 'N/A'; ?></span>
-                    </span>
-                    <span class="meta-item">
-                        <strong>Data da última alteração:</strong> 
-                        <span id="aj_data_alteracao"><?php echo $atendimento->data_alteracao ? esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_alteracao ) ) ) : 'N/A'; ?></span>
-                    </span>
-                <?php endif; ?>
-
-            </div>
-
-<br>
-<br>
-
-            <div class="form-actions">
-                <?php if ( $is_readonly ) : ?>
-                    <a href="?page=atendimento-juridico" class="button aj-btn-voltar"><span class="dashicons dashicons-arrow-left-alt"></span>Voltar à Lista</a>
-                <?php else : ?>
-                    <button type="reset" class="button aj-btn-limpar"><span class="dashicons dashicons-trash"></span>Limpar</button>
-                    <a href="?page=atendimento-juridico" class="button aj-btn-cancelar"><span class="dashicons dashicons-no-alt"></span>Cancelar</a>
-                    <button type="submit" name="submit" id="submit" class="button aj-btn-salvar"><span class="dashicons dashicons-yes-alt"></span>Salvar Atendimento</button>
-                <?php endif; ?>
-            </div>
-<br>
-<br>
-
-            </form>
-            
-            <!-- Botão flutuante para o manual de ajuda -->
-            <a href="<?php echo esc_url( plugin_dir_url( dirname( __FILE__, 2 ) ) . 'app/aj-assets/manual-sistema.pdf' ); ?>" download="manual-sistema.pdf" class="aj-fab-help dashicons dashicons-editor-help" title="Manual do Sistema"></a>
-            </div> <!-- Fim do .aj-form-wrapper -->
-        </div>
-        <?php
+        
+        // --- Lógica do Controller: Chamar a View ---
+        require_once plugin_dir_path( __DIR__ ) . 'aj-assets/aj-views/tela-formulario-wrapper.php';
     } else {
         // Adiciona um wrapper específico para a página de listagem
         echo '<div class="aj-list-wrapper">';
@@ -402,3 +286,75 @@ function aj_buscar_atendimentos_ajax_handler() {
     ] );
 }
 add_action( 'wp_ajax_aj_buscar_atendimentos', 'aj_buscar_atendimentos_ajax_handler' );
+
+/**
+ * Manipulador AJAX para buscar todos os dados para o relatório.
+ */
+function aj_gerar_relatorio_ajax_handler() {
+    // 1. Verificação de segurança (nonce)
+    check_ajax_referer( 'aj_buscar_nonce' );
+
+    // 2. Coleta dos mesmos argumentos de busca, mas sem paginação
+    $search_args = [
+        's'               => isset( $_POST['s'] ) ? sanitize_text_field( wp_unslash( $_POST['s'] ) ) : '',
+        'adv_socio'       => isset( $_POST['adv_socio'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_socio'] ) ) : '',
+        'adv_advogado'    => isset( $_POST['adv_advogado'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_advogado'] ) ) : '',
+        'adv_tipo'        => isset( $_POST['adv_tipo'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_tipo'] ) ) : '',
+        'adv_status'      => isset( $_POST['adv_status'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_status'] ) ) : '',
+        'adv_data_inicio' => isset( $_POST['adv_data_inicio'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_data_inicio'] ) ) : '',
+        'adv_data_fim'    => isset( $_POST['adv_data_fim'] ) ? sanitize_text_field( wp_unslash( $_POST['adv_data_fim'] ) ) : '',
+        'nopaging'        => true, // Chave para buscar todos os resultados
+    ];
+
+    // 3. Busca no banco de dados
+    $search_result = aj_search_atendimentos( $search_args );
+    $atendimentos = $search_result['results'];
+
+    // 4. Processamento dos dados para as estatísticas
+    $stats = [
+        'total' => count( $atendimentos ),
+        'status_counts' => [],
+        'advogado_counts' => [],
+        'horario_counts' => [],
+        'tipo_counts' => [],
+    ];
+
+    foreach ( $atendimentos as $item ) {
+        // Formata a data para o relatório
+        $item->data_formatada = date( 'd/m/Y H:i', strtotime( $item->data_atendimento ) );
+
+        // Contagem para estatísticas
+        $stats['status_counts'][$item->status] = ( $stats['status_counts'][$item->status] ?? 0 ) + 1;
+        $stats['tipo_counts'][$item->tipo_atendimento] = ( $stats['tipo_counts'][$item->tipo_atendimento] ?? 0 ) + 1;
+
+        // Divide os advogados e conta individualmente
+        $advogados = array_map( 'trim', explode( ',', $item->advogados ) );
+        foreach ( $advogados as $adv ) {
+            if ( ! empty( $adv ) ) {
+                $stats['advogado_counts'][$adv] = ( $stats['advogado_counts'][$adv] ?? 0 ) + 1;
+            }
+        }
+
+        $hora = date( 'H:00', strtotime( $item->data_atendimento ) );
+        $stats['horario_counts'][$hora] = ( $stats['horario_counts'][$hora] ?? 0 ) + 1;
+    }
+
+    wp_send_json_success( [ 'data' => $atendimentos, 'stats' => $stats ] );
+}
+add_action( 'wp_ajax_aj_gerar_relatorio', 'aj_gerar_relatorio_ajax_handler' );
+
+/**
+ * Enfileira scripts e estilos para a área de administração.
+ */
+function aj_enqueue_admin_scripts( $hook ) {
+    // Garante que o script só seja carregado na página do nosso plugin
+    if ( 'toplevel_page_atendimento-juridico' !== $hook ) {
+        return;
+    }
+
+    // Adiciona a biblioteca jsPDF
+    wp_enqueue_script( 'aj-jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', [], '2.5.1', true );
+    // Adiciona o plugin jsPDF-AutoTable
+    wp_enqueue_script( 'aj-jspdf-autotable', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js', ['aj-jspdf'], '3.8.2', true );
+}
+add_action( 'admin_enqueue_scripts', 'aj_enqueue_admin_scripts' );
