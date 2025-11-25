@@ -551,6 +551,27 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
+.form-actions .aj-btn-relatorio {
+    background-color: #4B0082; /* Roxo Escuro (Indigo) */
+    border-color: #4B0082;
+    color: #fff;
+}
+.form-actions .aj-btn-relatorio:hover {
+    background-color: #3a0066; /* Tom de roxo mais escuro para o hover */
+    border-color: #3a0066;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* --- Alternativas de Cor (se preferir, substitua o código acima por um destes) --- */
+
+/* Cinza Escuro (similar ao botão 'Voltar') */
+/*
+.form-actions .aj-btn-relatorio { background-color: #6c757d; border-color: #6c757d; color: #fff; }
+.form-actions .aj-btn-relatorio:hover { background-color: #5a6268; border-color: #545b62; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+*/
+
 
 .aj-actions-container {
     position: relative;
@@ -842,7 +863,7 @@
 #aj-generate-report-btn {
     background-color: #ffffff !important;
     border: 2px solid #8A2BE2 !important; /* Roxo */
-    color: #000000 !important; /* Preto */
+    color: #511269 !important; /* Preto */
     border-radius: 20px !important;
     padding: 10px 25px !important; /* Aumentado */
     font-weight: bold !important;
