@@ -196,10 +196,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ```
 
-### Próximo Passo
-
-Agora, precisamos criar a lógica que irá buscar os dados e chamar este arquivo de visualização. Você pode me fornecer o arquivo PHP que atualmente gerencia a página `atendimento-juridico` (onde ficam as ações de `new`, `edit`, etc.)?
-
-Se você não souber qual é, podemos criar um novo arquivo `aj-relatorio-controller.php` e incluí-lo no seu plugin principal. Apenas me diga como prefere prosseguir!<!--
-[PROMPT_SUGGESTION]Ok, vamos criar o arquivo `aj-relatorio-controller.php` e integrá-lo.[/PROMPT_SUGGESTION]
-[PROMPT_SUGGESTION]Explique o que o código no arquivo `tela-relatorio-socio.php` faz.[/PROMPT_SUGGESTION]
