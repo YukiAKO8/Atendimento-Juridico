@@ -72,22 +72,22 @@ $socio_nome = isset( $atendimento->socios ) ? esc_attr( $atendimento->socios ) :
             <div class="form-actions">
                 <?php if ( $is_readonly ) : ?>
                     <?php if ( $atendimento_id > 0 ) : ?>
-                        <button type="button" class="button aj-btn-relatorio-atendimento-pdf" data-atendimento-id="<?php echo esc_attr($atendimento_id); ?>">
+                        <button type="button" class="button aj-btn-relatorio-atendimento" data-atendimento-id="<?php echo esc_attr($atendimento_id); ?>">
                             <span class="dashicons dashicons-media-default"></span>Gerar Relatório do Atendimento
                         </button>
                     <?php endif; ?>
-                    <button type="button" class="button aj-btn-relatorio-socio-pdf" data-socio="<?php echo esc_attr($socio_nome); ?>">
+                    <button type="button" class="button aj-btn-relatorio-socio" data-socio="<?php echo esc_attr($socio_nome); ?>">
                         <span class="dashicons dashicons-printer"></span>Relatório do Sócio
                     </button>
                     <a href="?page=atendimento-juridico" class="button aj-btn-voltar"><span class="dashicons dashicons-arrow-left-alt"></span>Voltar à Lista</a>
                 <?php else : ?>
                     <button type="reset" class="button aj-btn-limpar"><span class="dashicons dashicons-trash"></span>Limpar</button>
                     <?php if ( $atendimento_id > 0 ) : ?>
-                        <button type="button" class="button aj-btn-relatorio-atendimento-pdf" data-atendimento-id="<?php echo esc_attr($atendimento_id); ?>">
+                        <button type="button" class="button aj-btn-relatorio-atendimento" data-atendimento-id="<?php echo esc_attr($atendimento_id); ?>">
                             <span class="dashicons dashicons-media-default"></span>Gerar Relatório do Atendimento
                         </button>
                     <?php endif; ?>
-                    <button type="button" class="button aj-btn-relatorio-socio-pdf" data-socio="<?php echo esc_attr($socio_nome); ?>">
+                    <button type="button" class="button aj-btn-relatorio-socio" data-socio="<?php echo esc_attr($socio_nome); ?>">
                         <span class="dashicons dashicons-printer"></span>Relatório do Sócio
                     </button>
                     <a href="?page=atendimento-juridico" class="button aj-btn-cancelar"><span class="dashicons dashicons-no-alt"></span>Cancelar</a>

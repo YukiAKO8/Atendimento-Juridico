@@ -202,7 +202,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
 
     <div class="aj-list-footer">
         <div id="aj-pagination-container"></div>
-        <button type="button" id="aj-generate-report-btn" class="button button-primary"><span class="dashicons dashicons-printer"></span> Gerar Relatório</button>
+        <button type="button" id="aj-generate-report-btn" class="button aj-btn-relatorio-socio"><span class="dashicons dashicons-printer"></span> Gerar Relatório</button>
     </div>
 
 
@@ -211,5 +211,97 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     <a href="<?php echo esc_url( $add_new_url ); ?>" class="aj-fab-add-new dashicons dashicons-plus-alt" title="Adicionar novo atendimento"></a>
 
     <!-- Botão flutuante para o manual de ajuda -->
-    <a href="<?php echo esc_url( plugin_dir_url( dirname( __FILE__, 3 ) ) . 'app/aj-assets/manual-sistema.pdf' ); ?>" download="manual-sistema.pdf" class="aj-fab-help dashicons dashicons-editor-help" title="Manual do Sistema"></a>
+    <button type="button" id="aj-open-help-modal" class="aj-fab-help dashicons dashicons-editor-help" title="Guia de Atendimento"></button>
+
+    <!-- Modal de Ajuda -->
+    <div id="aj-help-modal" class="aj-modal-overlay" style="display: none;">
+        <div class="aj-modal-content">
+            <div class="aj-modal-header">
+                <h2>Guia de Atendimento Jurídico</h2>
+                <button type="button" id="aj-close-help-modal" class="aj-modal-close">&times;</button>
+            </div>
+            <div class="aj-modal-body">
+                <iframe src="<?php echo esc_url( plugin_dir_url( dirname( __FILE__ ) ) . 'aj-views/GuiaAtendimentoJuridico.pdf' ); ?>" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estilos para o Modal de Ajuda -->
+    <style>
+        .aj-modal-overlay {
+            position: fixed; /* Posiciona o modal em relação à janela do navegador */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro semitransparente */
+            z-index: 10000; /* Garante que o modal fique sobre todos os outros elementos */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .aj-modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 80%; /* O modal ocupará 80% da largura da tela */
+            height: 90%; /* O modal ocupará 90% da altura da tela */
+            max-width: 1200px; /* Largura máxima */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .aj-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .aj-modal-body {
+            padding: 20px;
+            flex-grow: 1; /* Faz o corpo do modal ocupar o espaço restante */
+        }
+        #aj-close-help-modal {
+            background: none;
+            border: 2px solid #d9534f; /* Vermelho */
+            color: #d9534f; /* Vermelho */
+            border-radius: 50%; /* Totalmente arredondado */
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            line-height: 26px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #aj-close-help-modal:hover {
+            background-color: #d9534f; /* Vermelho */
+            color: #fff; /* Branco */
+        }
+    </style>
+
+    <script>
+    jQuery(document).ready(function($) {
+        const modal = $('#aj-help-modal');
+        const openBtn = $('#aj-open-help-modal');
+        const closeBtn = $('#aj-close-help-modal');
+
+        // Abrir o modal
+        openBtn.on('click', function() {
+            modal.show();
+        });
+
+        // Fechar o modal pelo botão 'x'
+        closeBtn.on('click', function() {
+            modal.hide();
+        });
+
+        // Fechar o modal clicando fora da área de conteúdo
+        $(window).on('click', function(event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+            }
+        });
+    });
+    </script>
 </div>

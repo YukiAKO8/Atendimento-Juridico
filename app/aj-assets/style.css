@@ -1,4 +1,7 @@
 
+/* Importa a fonte Montserrat do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
 .form-row {
     display: flex;
     gap: 20px; 
@@ -379,14 +382,56 @@
 .aj-form-wrapper {
     max-width: 1600px; /* Define uma largura máxima */
     margin: 40px auto 0 auto; /* 40px de margem no topo, e centraliza horizontalmente */
+    padding: 20px 40px; /* Espaçamento interno */
+    border-radius: 12px; /* Cantos arredondados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Sombra suave */
+    font-family: 'Open Sans', sans-serif; /* Define a fonte padrão para o formulário */
+    background-color: #f8f9fa; /* Cor de fundo cinza esbranquiçado */
+    /* Efeito de fundo animado de quadradinhos */
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC") repeat 0 0;
+    -webkit-animation: bg-scrolling-reverse 20s infinite;
+    -moz-animation: bg-scrolling-reverse 20s infinite;
+    -o-animation: bg-scrolling-reverse 20s infinite;
+    animation: bg-scrolling-reverse 20s infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    -o-animation-timing-function: linear;
+    animation-timing-function: linear;
 }
+
 /* Adiciona um fundo à página de listagem */
 .aj-list-page-wrapper.wrap {
     background-color: #fff;
     padding: 20px 40px;
     border-radius: 12px;
+    /* Efeito de fundo animado com quadrados menores */
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC") repeat 0 0;
+    background-size: 25px 25px; /* Faz os quadrados parecerem menores */
+    -webkit-animation: bg-scrolling-reverse 20s infinite;
+    -moz-animation: bg-scrolling-reverse 20s infinite;
+    -o-animation: bg-scrolling-reverse 20s infinite;
+    animation: bg-scrolling-reverse 20s infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    -o-animation-timing-function: linear;
+    animation-timing-function: linear;
 }
 
+/* Estilo para o título do formulário (Editar/Adicionar/Visualizar Atendimento) */
+/* Garante que o conteúdo fique sobre o canvas do Vanta.js */
+.aj-form-wrapper > * {
+    position: relative;
+    z-index: 2;
+}
+.aj-form-wrapper h1 {
+    font-family: 'Montserrat', sans-serif; /* Fonte mais profissional */
+    text-align: center;
+    font-size: 34px; /* Letra maior */
+    font-style: normal; /* Remove o itálico */
+    font-weight: 700; /* Garante o negrito */
+    color: #333; /* Cor mais escura para destaque */
+    letter-spacing: 1px; /* Espaçamento entre letras para um visual refinado */
+}
 
 .aj-form-wrapper .aj-nav-tab-wrapper {
     padding-left: 10px;
@@ -485,83 +530,185 @@
     justify-content: flex-end; 
 }
 
+/* Estilo base para os novos botões de ação */
 .form-actions .button {
-    padding: 8px 15px;
-    display: inline-flex; 
+    position: relative; /* Necessário para o posicionamento do ícone */
+    display: inline-flex;
     align-items: center;
-    gap: 5px; 
-    border-radius: 5px; 
-    transition: background-color 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.1s; 
+    justify-content: center;
+    border-radius: 50px; /* Formato de pílula */
+    padding: 0 20px 0 55px; /* Espaço para o ícone à esquerda */
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    overflow: hidden; /* Esconde o que sair do botão */
+    transition: color 0.4s ease-in-out, background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+    border: 2px solid; /* Borda base, a cor será definida por botão */
+    cursor: pointer;
+    background-color: #fff; /* Fundo branco */
+    background-color: #fff !important; /* Fundo branco com !important para garantir a base */
+}
+
+/* Cria o círculo colorido como um pseudo-elemento */
+/* Este pseudo-elemento não é mais necessário com a nova abordagem */
+.form-actions .button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px; /* Largura inicial do círculo */
+    height: 100%;
+    /* Ajustes para respeitar a borda */
+    left: 2px;
+    top: 2px;
+    width: 38px; /* Altura do botão (42px) - bordas (2px*2) */
+    height: calc(100% - 4px);
+    /* Fim dos ajustes */
+    border-radius: 50px; /* Mantém o formato de pílula durante a transição */
+    transition: width 0.4s ease-in-out; /* Animação de expansão */
+    z-index: 0; /* Fica atrás do texto e do ícone */
 }
 
 .form-actions .dashicons {
-
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px; /* Largura fixa para o ícone não se mover */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: left 0.4s ease-in-out, transform 0.4s ease-in-out; /* Transição para o movimento do ícone */
+    z-index: 2; /* Garante que o ícone fique sobre o fundo */
+    color: #fff; /* Cor do ícone é sempre branca */
 }
 
+/* Efeito de hover para todos os botões */
+.form-actions .button:hover {
+    color: transparent !important; /* Esconde o texto, !important para garantir */
+}
+/* Move o ícone para o centro no hover */
+.form-actions .button:focus {
+    box-shadow: none; /* Remove a sombra azul padrão do WordPress no foco */
+    outline: none; /* Remove a outline padrão do navegador */
+}
+
+
+.form-actions .button:hover .dashicons {
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff !important; /* Garante que o ícone fique branco no hover para contraste */
+}
+
+/* Expande o círculo colorido (pseudo-elemento) para cobrir o botão */
+.form-actions .button:hover::before {
+    width: 100%;
+    width: calc(100% - 4px); /* Expande até a borda interna */
+}
 
 .form-actions .aj-btn-salvar {
-    background-color: #28a745; 
-    border-color: #28a745;
-    color: #fff;
+    border-color: #5cb85c; /* Verde mais suave */
+    color: #000; /* Texto preto */
+    background-color: #fff; /* Fundo branco */
 }
-.form-actions .aj-btn-salvar:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-    color: #fff; 
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+.form-actions .aj-btn-salvar::before {
+    background-color: #5cb85c; /* Verde mais suave */
 }
 
 .form-actions .aj-btn-limpar {
-    background-color: #005a9c;
-    border-color: #005a9c;
-    color: #fff;
+    border-color: #e54e5d; /* Vermelho mais suave */
+    color: #000; /* Texto preto */
+    background-color: #fff; /* Fundo branco */
 }
-.form-actions .aj-btn-limpar:hover {
-    background-color: #004a80;
-    border-color: #00406d;
-    color: #fff; 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.form-actions .aj-btn-limpar::before {
+    background-color: #e54e5d; /* Vermelho mais suave */
 }
 
 .form-actions .aj-btn-cancelar {
-    background-color: #d9534f; 
-    border-color: #d9534f;
-    color: #fff;
+    border-color: #ff9a23; /* Laranja mais suave */
+    color: #000; /* Texto preto */
+    background-color: #fff; /* Fundo branco */
 }
-.form-actions .aj-btn-cancelar:hover {
-    background-color: #c9302c;
-    border-color: #ac2925;
-    color: #fff; 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.form-actions .aj-btn-cancelar::before {
+    background-color: #ff9a23; /* Laranja mais suave */
 }
 
 .form-actions .aj-btn-voltar {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: #fff;
+    border-color: #868e96; /* Cinza mais suave */
+    color: #000; /* Texto preto */
+    background-color: #fff; /* Fundo branco */
 }
-.form-actions .aj-btn-voltar:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.form-actions .aj-btn-voltar::before {
+    background-color: #868e96; /* Cinza mais suave */
 }
 
-.form-actions .aj-btn-relatorio {
-    background-color: #4B0082; /* Roxo Escuro (Indigo) */
-    border-color: #4B0082;
-    color: #fff;
+/* --- Estilos para Botões de Relatório (Dentro do Atendimento) --- */
+
+/* Classe para "Relatório do Sócio" - Seletor de alta especificidade para sobrepor .wp-core-ui */
+.wrap .form-actions .button.aj-btn-relatorio-socio {
+    border-color: #8e44ad !important; /* Roxo mais suave */
+    color: #000 !important; /* Texto preto */
+    background-color: #fff !important; /* Garante fundo branco */
 }
-.form-actions .aj-btn-relatorio:hover {
-    background-color: #3a0066; /* Tom de roxo mais escuro para o hover */
-    border-color: #3a0066;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.wrap .form-actions .button.aj-btn-relatorio-socio::before {
+    background-color: #8e44ad !important; /* Roxo mais suave */
+}
+
+/* Classe para "Gerar Relatório do Atendimento" - Seletor de alta especificidade para sobrepor .wp-core-ui */
+.wrap .form-actions .button.aj-btn-relatorio-atendimento {
+    border-color: #8e44ad !important; /* Roxo mais suave */
+    color: #000 !important; /* Texto preto */
+    background-color: #fff !important; /* Garante fundo branco */
+}
+.wrap .form-actions .button.aj-btn-relatorio-atendimento::before {
+    background-color: #8e44ad !important; /* Roxo mais suave */
+}
+
+/* Remove estilos de hover antigos que não são mais necessários */
+.form-actions .aj-btn-salvar:hover,
+.form-actions .aj-btn-limpar:hover,
+.form-actions .aj-btn-cancelar:hover,
+.form-actions .aj-btn-voltar:hover,
+.wrap .form-actions .button.aj-btn-relatorio-socio:hover,
+.wrap .form-actions .button.aj-btn-relatorio-atendimento:hover {
+    transform: none; /* Garante que não haja transformações antigas */
+    box-shadow: none; /* Garante que não haja sombras antigas */
+    /* A cor da borda não precisa ser resetada aqui */
+}
+
+/*
+ * CORREÇÃO DEFINITIVA PARA SOBREPOSIÇÃO DE HOVER E FOCUS (ex: wp-core-ui.css)
+ * Reafirma a cor da borda para cada botão nos estados de hover e focus,
+ * e remove o box-shadow azul padrão do WordPress no estado de focus.
+*/
+.form-actions .aj-btn-salvar:hover,
+.form-actions .aj-btn-salvar:focus {
+    border-color: #5cb85c !important; /* Verde mais suave */
+    box-shadow: none !important;
+}
+.form-actions .aj-btn-limpar:hover,
+.form-actions .aj-btn-limpar:focus {
+    border-color: #e54e5d !important; /* Vermelho mais suave */
+    box-shadow: none !important;
+}
+.form-actions .aj-btn-cancelar:hover,
+.form-actions .aj-btn-cancelar:focus {
+    border-color: #ff9a23 !important; /* Laranja mais suave */
+    box-shadow: none !important;
+}
+.form-actions .aj-btn-voltar:hover,
+.form-actions .aj-btn-voltar:focus {
+    border-color: #868e96 !important; /* Cinza mais suave */
+    box-shadow: none !important;
+}
+.wrap .form-actions .button.aj-btn-relatorio-socio:hover,
+.wrap .form-actions .button.aj-btn-relatorio-atendimento:hover,
+.wrap .form-actions .button.aj-btn-relatorio-socio:focus,
+.wrap .form-actions .button.aj-btn-relatorio-atendimento:focus {
+    border-color: #8e44ad !important; /* Roxo mais suave */
+    box-shadow: none !important;
 }
 
 /* --- Alternativas de Cor (se preferir, substitua o código acima por um destes) --- */
@@ -857,29 +1004,6 @@
     }
 }
 
-/* Estilos movidos do aj-controller.php */
-
-/* Estilo do botão Gerar Relatório */
-#aj-generate-report-btn {
-    background-color: #ffffff !important;
-    border: 2px solid #8A2BE2 !important; /* Roxo */
-    color: #511269 !important; /* Preto */
-    border-radius: 20px !important;
-    padding: 10px 25px !important; /* Aumentado */
-    font-weight: bold !important;
-    font-size: 15px !important; /* Aumentado */
-    transition: background-color 0.3s ease, color 0.3s ease !important;
-    height: auto !important;
-    line-height: normal !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-}
-
-#aj-generate-report-btn:hover {
-    background-color: rgba(138, 43, 226, 0.1) !important; /* Roxo transparente */
-    color: #000000 !important;
-}
-
 /* Aplica a animação de balanço ao ícone da impressora no hover do botão */
 #aj-generate-report-btn:hover .dashicons-printer {
     animation: shake-icon 0.5s ease-in-out;
@@ -959,4 +1083,49 @@
     0% { transform: translateY(0px); }
     50% { transform: translateY(-5px); }
     100% { transform: translateY(0px); }
+}
+
+/* Animações para o fundo do formulário */
+@-webkit-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-webkit-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+    background-position: 50px 50px;
+  }
 }
