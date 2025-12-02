@@ -1189,9 +1189,27 @@ max-width: 190px;
 
 /* wrapper relativo pra lista ficar "colada" no input */
 .aj-socio-wrapper {
-    position: relative;
-    display: inline-block;
     width: 100%;
+    position: relative; /* Garante que o dropdown absoluto se posicione corretamente */
+}
+
+/* wrapper relativo para o campo de advogados */
+.aj-advogado-wrapper {
+    width: 100%;
+}
+
+.aj-toggle-advogados {
+    position: absolute;
+    right: 1px;
+    top: 28px;
+    height: 36px; /* Altura igual ao input */
+    width: 36px; /* Largura para criar uma área de clique */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #50575e;
+    transition: transform 0.2s ease-in-out;
 }
 
 .aj-toggle-socios {
@@ -1211,6 +1229,17 @@ max-width: 190px;
 }
 
 #aj_socios_suggestions {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#aj_advogados_suggestions {
     display: none;
     position: absolute;
     background-color: #fff;

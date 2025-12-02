@@ -9,7 +9,7 @@ jQuery(document).ready(function($) {
     // --- Início: Lógica para busca interativa de sócios (Pré-carregada) ---
     var todosOsSocios = []; // Array para armazenar a lista completa de sócios
     var sociosCarregados = false; // Flag para controlar se os sócios já foram carregados
-    var suggestionsBox = $('#aj_socios_suggestions');
+    var sociosSuggestionsBox = $('#aj_socios_suggestions'); // Renomeado para clareza
     var sociosInput = $('#aj_socios');
 
     // 1. Carrega todos os sócios via AJAX assim que a página estiver pronta (em background)
@@ -18,8 +18,7 @@ jQuery(document).ready(function($) {
             url: ajaxurl, // ajaxurl é uma variável global do WordPress
             type: 'POST',
             data: {
-                action: 'aj_buscar_socios',
-                q: '',
+                action: 'aj_get_socios', // Ação correta para buscar sócios
                 _ajax_nonce: aj_form_data.nonce
             },
             success: function(res) {
@@ -35,14 +34,14 @@ jQuery(document).ready(function($) {
     // 2. Ao focar no campo, exibe a lista pré-carregada
     sociosInput.on('focus', function() {
         if (sociosCarregados) {
-            filtrarEExibirSocios($(this).val());
+            filtrarEExibirSocios($(this).val()); // Isso mostrará todos se o input estiver vazio
         } else {
-            suggestionsBox.html('<div class="suggestion-item">Carregando...</div>').show();
+            sociosSuggestionsBox.html('<div class="suggestion-item">Carregando...</div>').show();
         }
     });
 
     // 3. Ao digitar, filtra a lista já carregada
-    sociosInput.on('input', function() {
+    sociosInput.on('input', function() { // Isso é para o comportamento de autocompletar
         var searchTerm = $(this).val();
         filtrarEExibirSocios(searchTerm);
     });
@@ -77,16 +76,16 @@ jQuery(document).ready(function($) {
     }
 
     // Função para popular a caixa de sugestões
-    function exibirSocios(lista) {
-        suggestionsBox.empty();
+    function exibirSocios(lista) { // Para autocompletar de sócios
+        sociosSuggestionsBox.empty();
         if (lista.length > 0) {
             $.each(lista, function(index, socio) {
-                suggestionsBox.append('<div class="suggestion-item" data-name="' + esc_attr(socio.nome) + '">' + esc_html(socio.nome) + '</div>');
+                sociosSuggestionsBox.append('<div class="suggestion-item" data-name="' + esc_attr(socio.nome) + '">' + esc_html(socio.nome) + '</div>');
             });
         } else {
-            suggestionsBox.html('<div class="suggestion-item">Nenhum sócio encontrado.</div>');
+            sociosSuggestionsBox.html('<div class="suggestion-item">Nenhum sócio encontrado.</div>');
         }
-        suggestionsBox.show();
+        sociosSuggestionsBox.show();
     }
 
     // 4. Ao clicar em uma sugestão, preenche o campo e esconde a lista
@@ -94,17 +93,98 @@ jQuery(document).ready(function($) {
         var selectedName = $(this).data('name');
         if (selectedName) {
             $('#aj_socios').val(selectedName); // Preenche o campo com o nome clicado
-            $('#aj_socios_suggestions').hide(); // Esconde a caixa
+            sociosSuggestionsBox.hide(); // Esconde a caixa
         }
     });
 
     // 5. Ao clicar fora do campo, esconde a lista
     $(document).on('click', function(e) {
-        if (!$(e.target).closest('.form-group').length) {
-            suggestionsBox.hide();
+        // Verifica se o clique foi fora do input de sócios e sua caixa de sugestões
+        if (!$(e.target).closest('.aj-socio-wrapper').length) {
+            sociosSuggestionsBox.hide();
+        }
+        // Adicionado para fechar o dropdown de advogados também
+        if (!$(e.target).closest('.aj-advogado-wrapper').length) {
+            $('#aj_advogados_suggestions').hide();
         }
     });
     // --- Fim: Lógica para busca interativa de sócios ---
+
+    // --- Início: Lógica para busca interativa de advogados (Autocompletar) ---
+    var todosOsAdvogados = [];
+    var advogadosCarregados = false;
+    var advogadosInput = $('#aj_advogados');
+    var advogadosSuggestionsBox = $('#aj_advogados_suggestions');
+
+    function carregarAdvogados() {
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'aj_buscar_advogados',
+                _ajax_nonce: (typeof aj_vars !== 'undefined') ? aj_vars.nonce : aj_form_data.nonce
+            },
+            success: function(res) {
+                if (res.success && res.data.length > 0) {
+                    todosOsAdvogados = res.data;
+                    advogadosCarregados = true;
+                }
+            }
+        });
+    }
+    carregarAdvogados();
+
+    // Adiciona o evento de clique na seta para mostrar/esconder as sugestões
+    $(document).on('click', '.aj-toggle-advogados', function(e) {
+        e.stopPropagation(); // Impede que o clique feche o menu imediatamente
+        if (advogadosSuggestionsBox.is(':visible')) {
+            advogadosSuggestionsBox.hide();
+        } else if (advogadosCarregados) {
+            filtrarEExibirAdvogados(''); // Mostra todos os advogados
+        }
+    });
+
+    advogadosInput.on('focus', function() {
+        if (advogadosCarregados) {
+            filtrarEExibirAdvogados($(this).val());
+        } else {
+            advogadosSuggestionsBox.html('<div class="suggestion-item">Carregando...</div>').show();
+        }
+    });
+
+    advogadosInput.on('input', function() {
+        var searchTerm = $(this).val();
+        filtrarEExibirAdvogados(searchTerm);
+    });
+
+    function filtrarEExibirAdvogados(termo) {
+        var termoLower = termo.toLowerCase();
+        var advogadosFiltrados = todosOsAdvogados.filter(function(adv) {
+            return adv.toLowerCase().includes(termoLower);
+        });
+        exibirAdvogados(advogadosFiltrados);
+    }
+
+    function exibirAdvogados(lista) {
+        advogadosSuggestionsBox.empty();
+        if (lista.length > 0) {
+            $.each(lista, function(index, adv) {
+                advogadosSuggestionsBox.append('<div class="suggestion-item" data-name="' + esc_attr(adv) + '">' + esc_html(adv) + '</div>');
+            });
+        } else {
+            advogadosSuggestionsBox.append('<div class="suggestion-item">Nenhum advogado encontrado.</div>');
+        }
+        advogadosSuggestionsBox.show();
+    }
+
+    $(document).on('click', '#aj_advogados_suggestions .suggestion-item', function() {
+        var selectedName = $(this).data('name');
+        if (selectedName) {
+            $('#aj_advogados').val(selectedName);
+            advogadosSuggestionsBox.hide();
+        }
+    });
+    // --- Fim: Lógica para busca interativa de advogados ---
 
     // Ao clicar no botão "Gerar Relatório do Sócio (PDF)"
     $(document).on('click', '.aj-btn-relatorio-socio-pdf', function(e) {

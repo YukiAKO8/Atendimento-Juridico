@@ -413,10 +413,15 @@ function aj_enqueue_admin_scripts( $hook ) {
     wp_enqueue_script( 'aj-jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array(), '2.5.1', true );
     wp_enqueue_script( 'aj-jspdf-autotable', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js', array( 'aj-jspdf' ), '3.8.2', true );
 
+    // Obtém os dados do atendimento atual, se houver, para passar ao JS
+    $atendimento_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+    $current_atendimento = $atendimento_id > 0 ? aj_get_atendimento_by_id( $atendimento_id ) : null;
+
     // Passa ajaxurl e nonce para o JS
     wp_localize_script( 'aj-jspdf-autotable', 'aj_vars', array(
         'ajaxurl' => admin_url( 'admin-ajax.php' ),
         'nonce'   => wp_create_nonce( 'aj_buscar_nonce' ),
+        'currentAdvogado' => $current_atendimento && isset($current_atendimento->advogados) ? $current_atendimento->advogados : '',
     ) );
 }
 add_action( 'admin_enqueue_scripts', 'aj_enqueue_admin_scripts' );

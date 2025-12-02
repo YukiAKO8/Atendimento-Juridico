@@ -103,8 +103,8 @@ $socio_nome = isset( $atendimento->socios ) ? esc_attr( $atendimento->socios ) :
 
 <script>
 jQuery(document).ready(function($) {
-    // Ao clicar no botão "Gerar Relatório do Sócio (PDF)"
-    $(document).on('click', '.aj-btn-relatorio-socio-pdf', function(e) {
+    // Ao clicar no botão "Relatório do Sócio"
+    $(document).on('click', '.aj-btn-relatorio-socio', function(e) {
         e.preventDefault();
         const socioNome = $(this).data('socio');
         if (!socioNome) {
@@ -133,8 +133,8 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Ao clicar no botão "Gerar Relatório do Atendimento (PDF)"
-    $(document).on('click', '.aj-btn-relatorio-atendimento-pdf', function(e) {
+    // Ao clicar no botão "Gerar Relatório do Atendimento"
+    $(document).on('click', '.aj-btn-relatorio-atendimento', function(e) {
         e.preventDefault();
         const atendimentoId = $(this).data('atendimento-id');
         if (!atendimentoId) {
@@ -338,24 +338,5 @@ jQuery(document).ready(function($) {
 
         doc.save('relatorio-geral-atendimentos.pdf');
     }
-    // Registra o AJAX para usuários logados
-add_action('wp_ajax_aj_get_socios', 'aj_retorna_nomes_socios');
-
-function aj_retorna_nomes_socios() {
-    // Exemplo: busca todos os posts do CPT 'socio'
-    $socios = get_posts([
-        'post_type'      => 'socio',   // ajuste para o seu CPT
-        'post_status'    => 'publish',
-        'numberposts'    => -1,
-        'orderby'        => 'title',
-        'order'          => 'ASC',
-    ]);
-
-    $nomes = array_map(function($s) {
-        return $s->post_title;
-    }, $socios);
-
-    wp_send_json_success($nomes);
-}
 });
 </script>

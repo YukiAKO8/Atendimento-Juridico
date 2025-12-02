@@ -35,9 +35,47 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
             <label for="aj_funcao">Função</label>
             <input type="text" id="aj_funcao" name="aj_funcao" value="<?php echo isset( $atendimento->funcao ) ? esc_attr( $atendimento->funcao ) : ''; ?>" <?php echo $is_readonly ? 'disabled' : ''; ?>>
         </div>
-        <div class="form-group">
+        <div class="form-group aj-advogado-wrapper">
             <label for="aj_advogados">Advogados *</label>
-            <input type="text" id="aj_advogados" name="aj_advogados" value="<?php echo isset( $atendimento->advogados ) ? esc_attr( $atendimento->advogados ) : ''; ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
+            <select id="aj_advogados" name="aj_advogados" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
+                <option value="">-- Selecione um Advogado --</option>
+                <?php
+                $advogados_lista = [
+                    "BRENDA HELLEN DE SOUZA AZEVEDO",
+                    "DIEGO BOUCHARDET",
+                    "DIEGO GARCIA MENDONÇA",
+                    "DOUGLAS NEWTON QUEIROZ",
+                    "ESTER CASTRO FERNANDES",
+                    "FLÁVIA MARIA GOMES PEREIRA",
+                    "GIOVANA LABIGALINI MARTINS",
+                    "IGOR MARTINS DIAS",
+                    "JULIANA DOS SANTOS",
+                    "KAIQUE FERREIRA DOS SANTOS HARADA",
+                    "KARINA PREMERO",
+                    "KARINA TAVARES",
+                    "LEONARDO LINS CAMELO DA SILVA",
+                    "LUCAS GABRIEL AGUIAR CASANTE FERREIRA",
+                    "LUIZ ROQUE",
+                    "LUIZ ROQUE MIRANDA CARDIA",
+                    "MARIA EDUARDA TEIXEIRA FAUSTINO",
+                    "MARIANA RAMOS ANDRADE",
+                    "MÁRCIA CRISTINA GEMAQUE FURTADO",
+                    "NÃO INFORMADO",
+                    "PEDRO DANIEL BLANCO ALVES",
+                    "RAFAEL BARBOSA DA SILVA",
+                    "RAFAEL VARJÃO DOS SANTOS MOURA",
+                    "RAFAEL VELOSO FREITAS",
+                    "ROBERT FARIAS",
+                    "TONY DIONIZIO ALVES COSTA",
+                    "VIVIAN OROSCO MICELLI",
+                    "VITÓRIA SILVÉRIO",
+                ];
+                $advogado_selecionado = isset( $atendimento->advogados ) ? $atendimento->advogados : '';
+                foreach ( $advogados_lista as $adv ) {
+                    echo '<option value="' . esc_attr( $adv ) . '" ' . selected( $advogado_selecionado, $adv, false ) . '>' . esc_html( $adv ) . '</option>';
+                }
+                ?>
+            </select>
         </div>
         <div class="form-group">
             <label for="aj_tipo_atendimento">Tipo de atendimento *</label>

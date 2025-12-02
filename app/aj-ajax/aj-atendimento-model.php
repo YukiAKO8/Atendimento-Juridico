@@ -180,9 +180,6 @@ add_action('wp_ajax_aj_get_socios', 'aj_retorna_nomes_socios');
  * A função verifica o nonce para segurança.
  */
 function aj_retorna_nomes_socios() {
-    // Verifica o nonce de segurança. Usamos 'aj_delete_nonce_action' que corresponde ao 'delete_nonce' do JS.
-    check_ajax_referer('aj_delete_nonce_action', '_ajax_nonce');
-
     $socios = get_posts([
         'post_type'      => 'socio',
         'post_status'    => 'publish',
@@ -195,4 +192,34 @@ function aj_retorna_nomes_socios() {
     $nomes = wp_list_pluck($socios, 'post_title');
 
     wp_send_json_success($nomes);
+}
+
+/**
+ * Registra o endpoint AJAX para buscar os nomes dos advogados.
+ */
+add_action('wp_ajax_aj_buscar_advogados', 'aj_buscar_advogados_handler');
+
+/**
+ * Busca nomes de advogados distintos da tabela de atendimentos.
+ * Como o campo 'advogados' pode ter múltiplos nomes separados por vírgula,
+ * esta função busca todos, os separa e retorna uma lista única.
+ */
+function aj_buscar_advogados_handler() {
+    // Nonce não é verificado aqui pois a informação não é sensível,
+    // mas poderia ser adicionado para maior segurança.
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aj_atendimentos';
+
+    // Pega todos os valores não nulos da coluna 'advogados'
+    $results = $wpdb->get_col("SELECT DISTINCT advogados FROM {$table_name} WHERE advogados IS NOT NULL AND advogados != ''");
+
+    $all_names = [];
+    foreach ($results as $result) {
+        // Separa nomes por vírgula, remove espaços em branco e adiciona ao array principal
+        $names = array_map('trim', explode(',', $result));
+        $all_names = array_merge($all_names, $names);
+    }
+
+    // Remove duplicados, filtra valores vazios e re-indexa o array
+    wp_send_json_success(array_values(array_unique(array_filter($all_names))));
 }
