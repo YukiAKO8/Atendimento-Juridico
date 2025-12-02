@@ -1,5 +1,44 @@
 jQuery(document).ready(function($) {
 
+    // --- Início: Lógica para busca de sócios (Dropdown dinâmico) ---
+    const $input = $('#aj_socios');
+    const $box   = $('#aj_socios_suggestions');
+
+    // Apenas executa se o campo de sócios existir na página
+    if ($input.length > 0) {
+        // Busca os sócios via AJAX ao carregar a página
+        $.post(ajaxurl, { action: 'aj_get_socios', _ajax_nonce: aj_object.delete_nonce }, function(res) {
+            if (res.success) {
+                let html = '';
+                res.data.forEach(function(nome) {
+                    // Escapa o nome para evitar problemas com aspas ou outros caracteres
+                    const esc_nome = $('<div>').text(nome).html();
+                    html += '<div class="suggestion-item">' + esc_nome + '</div>';
+                });
+                $box.html(html);
+            }
+        });
+
+        // Mostra a lista de sugestões ao focar no campo
+        $input.on('focus', function() { $box.show(); });
+
+        // Filtra a lista enquanto o usuário digita
+        $input.on('input', function() {
+            const val = $(this).val().toLowerCase();
+            $box.children().each(function() {
+                const txt = $(this).text().toLowerCase();
+                $(this).toggle(txt.includes(val));
+            });
+            $box.show();
+        });
+
+        // Preenche o campo ao clicar em uma sugestão
+        $box.on('click', '.suggestion-item', function() {
+            $input.val($(this).text()).trigger('change');
+            $box.hide();
+        });
+    }
+
     // --- Lógica para expandir/recolher a Pesquisa Avançada ---
     $('.aj-top-container-header').on('click', function() {
         const $container = $(this).closest('.aj-top-container');
@@ -61,6 +100,11 @@ jQuery(document).ready(function($) {
         $('.aj-actions-dropdown').not($dropdown).hide();
         $('.aj-card-row').removeClass('actions-menu-open');
 
+        // Fecha a caixa de sugestões de sócios se estiver aberta
+        if ($('#aj_socios_suggestions').is(':visible')) {
+            $('#aj_socios_suggestions').hide();
+        }
+
         // Alterna o menu atual e a classe na linha correspondente
         $dropdown.toggle();
         $row.toggleClass('actions-menu-open', $dropdown.is(':visible'));
@@ -70,6 +114,12 @@ jQuery(document).ready(function($) {
         if (!$(e.target).closest('.aj-actions-container').length) {
             $('.aj-actions-dropdown').hide();
             $('.aj-card-row').removeClass('actions-menu-open'); // Remove a classe de todas as linhas
+        }
+
+        // Fecha a lista de sócios ao clicar fora do seu container
+        // A condição verifica se o clique não foi no input E não foi na caixa de sugestões.
+        if (!$(e.target).is('#aj_socios') && !$(e.target).closest('#aj_socios_suggestions').length) {
+            $('#aj_socios_suggestions').hide();
         }
     });
 

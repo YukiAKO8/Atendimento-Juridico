@@ -91,9 +91,11 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                         <label for="adv_advogado">Advogado</label>
                         <input type="text" id="adv_advogado" name="adv_advogado" value="<?php echo esc_attr($adv_advogado); ?>">
                     </div>
-                    <div class="aj-filter-group">
+                    <!-- Campo de Sócio com suporte a dropdown -->
+                    <div class="aj-filter-group aj-socio-wrapper">
                         <label for="adv_socio">Sócio</label>
                         <input type="text" id="adv_socio" name="adv_socio" value="<?php echo esc_attr($adv_socio); ?>">
+                        <!-- O dropdown dinâmico não é necessário aqui, apenas no formulário de dados -->
                     </div>
                 </div>
                 <div class="aj-advanced-filters-actions">
@@ -202,7 +204,9 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
 
     <div class="aj-list-footer">
         <div id="aj-pagination-container"></div>
-        <button type="button" id="aj-generate-report-btn" class="button aj-btn-relatorio-socio"><span class="dashicons dashicons-printer"></span> Gerar Relatório</button>
+<button id="aj-generate-report-btn" class="button aj-btn-relatorio-geral">
+    <span class="dashicons dashicons-printer"></span> Gerar Relatório
+</button>
     </div>
 
 

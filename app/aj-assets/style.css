@@ -116,9 +116,9 @@
 }
 
 .aj-header-logo {
-    max-width: 190px; /* Logo um pouco maior */
-    height: auto; /* Mantém a proporção */
-    margin-right: -30px; /* Espaçamento entre o logo e o título */
+max-width: 190px;
+    height: auto;
+    margin-right: -15px;
 }
 
 .aj-list-title {
@@ -134,7 +134,7 @@
     font-size: 1rem;
     color: #50575e;
     margin-top: -30px;
-    margin-left: 80px; 
+    margin-left: 60px;
 }
 
 /* --- Estilos do Novo Container Acima da Pesquisa --- */
@@ -647,67 +647,35 @@
 /* --- Estilos para Botões de Relatório (Dentro do Atendimento) --- */
 
 /* Classe para "Relatório do Sócio" - Seletor de alta especificidade para sobrepor .wp-core-ui */
-.wrap .form-actions .button.aj-btn-relatorio-socio {
-    border-color: #8e44ad !important; /* Roxo mais suave */
-    color: #000 !important; /* Texto preto */
-    background-color: #fff !important; /* Garante fundo branco */
+/* ---------- botões roxo-claros (socio / atendimento / gerar-relatório) ---------- */
+.wrap .form-actions .button.aj-btn-relatorio-socio,
+.wrap .form-actions .button.aj-btn-relatorio-atendimento,
+.wrap .aj-list-footer .button.aj-btn-relatorio-socio,
+.wrap .aj-list-footer .button.aj-btn-relatorio-atendimento {
+    border-color: #8e44ad !important;
+    color: #000 !important;
+    background-color: #fff !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    transition: all .3s ease !important;
 }
-.wrap .form-actions .button.aj-btn-relatorio-socio::before {
-    background-color: #8e44ad !important; /* Roxo mais suave */
-}
-
-/* Classe para "Gerar Relatório do Atendimento" - Seletor de alta especificidade para sobrepor .wp-core-ui */
-.wrap .form-actions .button.aj-btn-relatorio-atendimento {
-    border-color: #8e44ad !important; /* Roxo mais suave */
-    color: #000 !important; /* Texto preto */
-    background-color: #fff !important; /* Garante fundo branco */
-}
-.wrap .form-actions .button.aj-btn-relatorio-atendimento::before {
-    background-color: #8e44ad !important; /* Roxo mais suave */
-}
-
-/* Remove estilos de hover antigos que não são mais necessários */
-.form-actions .aj-btn-salvar:hover,
-.form-actions .aj-btn-limpar:hover,
-.form-actions .aj-btn-cancelar:hover,
-.form-actions .aj-btn-voltar:hover,
-.wrap .form-actions .button.aj-btn-relatorio-socio:hover,
-.wrap .form-actions .button.aj-btn-relatorio-atendimento:hover {
-    transform: none; /* Garante que não haja transformações antigas */
-    box-shadow: none; /* Garante que não haja sombras antigas */
-    /* A cor da borda não precisa ser resetada aqui */
+.wrap .form-actions .button.aj-btn-relatorio-socio::before,
+.wrap .form-actions .button.aj-btn-relatorio-atendimento::before,
+.wrap .aj-list-footer .button.aj-btn-relatorio-socio::before,
+.wrap .aj-list-footer .button.aj-btn-relatorio-atendimento::before {
+    background-color: #8e44ad !important;
 }
 
-/*
- * CORREÇÃO DEFINITIVA PARA SOBREPOSIÇÃO DE HOVER E FOCUS (ex: wp-core-ui.css)
- * Reafirma a cor da borda para cada botão nos estados de hover e focus,
- * e remove o box-shadow azul padrão do WordPress no estado de focus.
-*/
-.form-actions .aj-btn-salvar:hover,
-.form-actions .aj-btn-salvar:focus {
-    border-color: #5cb85c !important; /* Verde mais suave */
-    box-shadow: none !important;
-}
-.form-actions .aj-btn-limpar:hover,
-.form-actions .aj-btn-limpar:focus {
-    border-color: #e54e5d !important; /* Vermelho mais suave */
-    box-shadow: none !important;
-}
-.form-actions .aj-btn-cancelar:hover,
-.form-actions .aj-btn-cancelar:focus {
-    border-color: #ff9a23 !important; /* Laranja mais suave */
-    box-shadow: none !important;
-}
-.form-actions .aj-btn-voltar:hover,
-.form-actions .aj-btn-voltar:focus {
-    border-color: #868e96 !important; /* Cinza mais suave */
-    box-shadow: none !important;
-}
+/* hover/focus unificado */
 .wrap .form-actions .button.aj-btn-relatorio-socio:hover,
 .wrap .form-actions .button.aj-btn-relatorio-atendimento:hover,
+.wrap .aj-list-footer .button.aj-btn-relatorio-socio:hover,
+.wrap .aj-list-footer .button.aj-btn-relatorio-atendimento:hover,
 .wrap .form-actions .button.aj-btn-relatorio-socio:focus,
-.wrap .form-actions .button.aj-btn-relatorio-atendimento:focus {
-    border-color: #8e44ad !important; /* Roxo mais suave */
+.wrap .form-actions .button.aj-btn-relatorio-atendimento:focus,
+.wrap .aj-list-footer .button.aj-btn-relatorio-socio:focus,
+.wrap .aj-list-footer .button.aj-btn-relatorio-atendimento:focus {
+    border-color: #8e44ad !important;
     box-shadow: none !important;
 }
 
@@ -719,7 +687,72 @@
 .form-actions .aj-btn-relatorio:hover { background-color: #5a6268; border-color: #545b62; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 */
 
+/* ---------- botão novo: mesma cor dos roxos, só que maior e texto+ícone centralizados ---------- */
+/* ---------- botão novo (aj-btn-relatorio-geral) ---------- */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral {
+    border-color: #8e44ad !important;
+    color: #000 !important;
+    background-color: #fff !important;
+    height: 46px !important;
+    padding: 0 24px 0 55px !important; /* espaço à esquerda p/ bolinha */
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all .4s ease-in-out !important;
+}
 
+/* bolinha roxa fixa (estado normal) */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 42px !important;
+    height: calc(100% - 4px) !important;
+    background-color: #8e44ad !important;
+    border-radius: 50px !important;
+    z-index: 0 !important;
+}
+
+/* ícone dentro da bolinha - branco e centralizado */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral .dashicons-printer {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 46px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    color: #fff !important;
+    z-index: 2 !important;
+    transition: left .4s ease-in-out, transform .4s ease-in-out !important;
+}
+
+/* hover - fundo todo roxo */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral:hover,
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral:focus {
+    background-color: #8e44ad !important;
+    color: transparent !important; /* esconde texto */
+    border-color: #8e44ad !important;
+    box-shadow: none !important;
+}
+
+/* expande a bolinha para ocupar o botão */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral:hover::before {
+    width: calc(100% - 4px) !important;
+}
+
+/* move ícone para o centro */
+.wrap .aj-list-footer .button.aj-btn-relatorio-geral:hover .dashicons-printer {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
 .aj-actions-container {
     position: relative;
     display: inline-block;
@@ -1128,4 +1161,62 @@
 }
     background-position: 50px 50px;
   }
+}
+
+.aj-socio-dropdown {
+    display: none;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    width: 100%;
+    margin-top: 4px;
+    z-index: 999;
+    list-style: none;
+    padding: 0;
+}
+
+.aj-socio-dropdown li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.aj-socio-dropdown li:hover {
+    background-color: #f0f0f1;
+}
+
+/* wrapper relativo pra lista ficar "colada" no input */
+.aj-socio-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.aj-toggle-socios {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #50575e;
+}
+.suggestion-item{
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.suggestion-item:hover{
+    background-color: #f0f0f1;
+}
+
+#aj_socios_suggestions {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
 }

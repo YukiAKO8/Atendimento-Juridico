@@ -168,3 +168,31 @@ function aj_search_atendimentos( $args = [] ) {
 
     return [ 'results' => $results, 'total' => (int) $total ];
 }
+
+/**
+ * Registra o endpoint AJAX para buscar os nomes dos sócios.
+ * Esta função é chamada pelo JavaScript para popular o dropdown dinâmico.
+ */
+add_action('wp_ajax_aj_get_socios', 'aj_retorna_nomes_socios');
+
+/**
+ * Busca todos os posts do Custom Post Type 'socio' e retorna seus títulos.
+ * A função verifica o nonce para segurança.
+ */
+function aj_retorna_nomes_socios() {
+    // Verifica o nonce de segurança. Usamos 'aj_delete_nonce_action' que corresponde ao 'delete_nonce' do JS.
+    check_ajax_referer('aj_delete_nonce_action', '_ajax_nonce');
+
+    $socios = get_posts([
+        'post_type'      => 'socio',
+        'post_status'    => 'publish',
+        'numberposts'    => -1, // -1 para buscar todos
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ]);
+
+    // Extrai apenas os títulos (nomes) dos posts
+    $nomes = wp_list_pluck($socios, 'post_title');
+
+    wp_send_json_success($nomes);
+}

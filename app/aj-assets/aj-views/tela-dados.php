@@ -12,9 +12,12 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
 ?>
 
     <div class="form-row">
-        <div class="form-group">
+        <!-- Adiciona um wrapper para o posicionamento correto do dropdown -->
+        <div class="form-group aj-socio-wrapper">
             <label for="aj_socios">Sócios *</label>
             <input type="text" id="aj_socios" name="aj_socios" value="<?php echo esc_attr( $socios ); ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
+            <!-- A caixa de sugestões é controlada via CSS e JS -->
+            <div id="aj_socios_suggestions"></div>
         </div>
         <div class="form-group">
             <label for="aj_situacao">Situação</label>

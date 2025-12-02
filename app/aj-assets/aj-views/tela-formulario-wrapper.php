@@ -338,5 +338,24 @@ jQuery(document).ready(function($) {
 
         doc.save('relatorio-geral-atendimentos.pdf');
     }
+    // Registra o AJAX para usuários logados
+add_action('wp_ajax_aj_get_socios', 'aj_retorna_nomes_socios');
+
+function aj_retorna_nomes_socios() {
+    // Exemplo: busca todos os posts do CPT 'socio'
+    $socios = get_posts([
+        'post_type'      => 'socio',   // ajuste para o seu CPT
+        'post_status'    => 'publish',
+        'numberposts'    => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ]);
+
+    $nomes = array_map(function($s) {
+        return $s->post_title;
+    }, $socios);
+
+    wp_send_json_success($nomes);
+}
 });
 </script>
