@@ -200,10 +200,13 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     </table>
 
     <div class="aj-list-footer">
-        <div id="aj-pagination-container"></div>
-<button id="aj-generate-report-btn" class="button aj-btn-relatorio-geral">
-    <span class="dashicons dashicons-printer"></span> Gerar Relatório
-</button>
+        <div class="aj-footer-left">
+            <button id="aj-generate-report-btn" class="button aj-btn-relatorio-geral">
+                <span class="dashicons dashicons-printer"></span> Gerar Relatório
+            </button>
+        </div>
+        <div id="aj-pagination-container" class="aj-footer-center"></div>
+        <div class="aj-footer-right"></div> <!-- Espaço reservado para alinhamento -->
     </div>
 
 
@@ -231,11 +234,18 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     <style>
         .aj-list-footer {
             margin-bottom: 50px; /* Ajuste este valor conforme necessário */
-            display: flex; /* Mantém os itens na mesma linha */
-            justify-content: flex-start; /* Alinha os itens à esquerda */
+            display: flex;
+            justify-content: space-between; /* Distribui o espaço entre os itens */
             align-items: center;
             padding-top: 20px;
             border-top: 1px solid #e5e5e5;
+        }
+        .aj-footer-left, .aj-footer-center, .aj-footer-right {
+            flex: 1; /* Faz cada seção ocupar 1/3 do espaço */
+        }
+        .aj-footer-center {
+            text-align: center; /* Centraliza a paginação */
+        }
         }
         .aj-actions-container {
             position: relative; /* Essencial para o posicionamento do dropdown */
