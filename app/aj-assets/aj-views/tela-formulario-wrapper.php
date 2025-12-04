@@ -102,7 +102,6 @@ $socio_nome = isset( $atendimento->socios ) ? esc_attr( $atendimento->socios ) :
             <br><br>
         </form>
         
-        <a href="<?php echo esc_url( plugin_dir_url( dirname( __FILE__, 3 ) ) . 'app/aj-assets/manual-sistema.pdf' ); ?>" download="manual-sistema.pdf" class="aj-fab-help dashicons dashicons-editor-help" title="Manual do Sistema"></a>
     </div>
 </div>
 

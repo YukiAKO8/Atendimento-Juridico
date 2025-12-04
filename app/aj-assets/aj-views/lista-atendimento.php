@@ -246,7 +246,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
         .aj-footer-center {
             text-align: center; /* Centraliza a paginação */
         }
-        }
+        
         .aj-actions-container {
             position: relative; /* Essencial para o posicionamento do dropdown */
         }
