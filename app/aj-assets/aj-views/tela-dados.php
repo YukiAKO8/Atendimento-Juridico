@@ -16,6 +16,7 @@ $hora_atendimento_val = isset( $atendimento->data_atendimento ) ? date( 'H:i', s
         <div class="form-group aj-socio-wrapper">
             <label for="aj_socios">Sócios *</label>
             <input type="text" id="aj_socios" name="aj_socios" value="<?php echo esc_attr( $socios ); ?>" required <?php echo $is_readonly ? 'disabled' : ''; ?>>
+            <button type="button" class="aj-socio-search-button dashicons dashicons-search" <?php echo $is_readonly ? 'disabled' : ''; ?>></button>
             <!-- A caixa de sugestões é controlada via CSS e JS -->
             <div id="aj_socios_suggestions"></div>
         </div>

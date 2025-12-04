@@ -19,8 +19,12 @@ jQuery(document).ready(function($) {
             }
         });
 
-        // Mostra a lista de sugestões ao focar no campo
-        $input.on('focus', function() { $box.show(); });
+        // Mostra/esconde a lista de sugestões ao clicar no botão de lupa
+        $(document).on('click', '.aj-socio-search-button', function(e) {
+            e.stopPropagation(); // Impede que o clique se propague para o document
+            $box.toggle();
+        });
+
 
         // Filtra a lista enquanto o usuário digita
         $input.on('input', function() {
@@ -36,6 +40,7 @@ jQuery(document).ready(function($) {
         $box.on('click', '.suggestion-item', function() {
             $input.val($(this).text()).trigger('change');
             $box.hide();
+            $input.focus(); // Devolve o foco ao input após a seleção
         });
     }
 
@@ -112,7 +117,7 @@ jQuery(document).ready(function($) {
 
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.aj-actions-container').length) {
-            $('.aj-actions-dropdown').hide();
+            $('.aj-actions-dropdown').hide(); // Esconde o menu de ações
             $('.aj-card-row').removeClass('actions-menu-open'); // Remove a classe de todas as linhas
         }
 
@@ -429,13 +434,12 @@ jQuery(document).ready(function($) {
                 const statusClass = 'aj-status-' + item.status.toLowerCase().replace(/ /g, '-');
                 const rowHtml = `
                     <tr class="aj-card-row">
-                        <td class="id column-id" data-label="ID">${item.id}</td>
+                        <td class="socio column-socio" data-label="Sócio">${item.socios}</td>
                         <td class="assunto column-assunto" data-label="Assunto">
                             <strong><a class="row-title" href="${item.edit_url}">${item.assunto}</a></strong>
                         </td>
-                        <td class="protocolo column-protocolo" data-label="Protocolo">${item.protocolo}</td>
                         <td class="advogado column-advogado" data-label="Advogado">${item.advogados}</td>
-                        <td class="socio column-socio" data-label="Sócio">${item.socios}</td>
+                        <td class="protocolo column-protocolo" data-label="Protocolo">${item.protocolo}</td>
                         <td class="data column-data" data-label="Data">${item.data_formatada}</td>
                         <td class="status column-status" data-label="Status">
                             <span class="aj-status-badge ${statusClass}">${item.status}</span>
@@ -455,11 +459,10 @@ jQuery(document).ready(function($) {
                                                     <li><a href="#"><span class="dashicons dashicons-text-page"></span> Comprovante</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-whatsapp"></span> Enviar Via Whatsapp</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-admin-users"></span> Procuração</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-businessman"></span> Procuração Advogado</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-money-alt"></span> Contratos Honorarios</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-text-page"></span> Declaração Pobreza</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-admin-home"></span> Declaração Residencia</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-groups"></span> Acordo Extrajudicial</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-admin-home"></span> Contrato AJI Trab.</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-groups"></span> Contrato AJI Prev.</a></li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -482,7 +485,7 @@ jQuery(document).ready(function($) {
                 $tbody.append(rowHtml);
             });
         } else {
-            $tbody.append('<tr class="no-items"><td class="colspanchange" colspan="8">Nenhum atendimento encontrado.</td></tr>');
+            $tbody.append('<tr class="no-items"><td class="colspanchange" colspan="7">Nenhum atendimento encontrado.</td></tr>');
         }
     }
 

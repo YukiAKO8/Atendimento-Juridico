@@ -258,13 +258,14 @@ function aj_processar_formulario() {
         $data['data_atendimento'] = $data_atendimento . ' ' . $hora_atendimento;
     }
 
-    if ( isset( $_POST['aj_sumula_atendimento'] ) ) {
-        $data['sumula_atendimento']      = sanitize_textarea_field( $_POST['aj_sumula_atendimento'] );
-        $data['objeto_atendimento']      = sanitize_textarea_field( $_POST['aj_objeto_atendimento'] );
+    // Sempre processa os campos da aba "Observações" se eles existirem no POST
+    if ( isset( $_POST['aj_objeto_atendimento'] ) ) {
+        $data['objeto_atendimento'] = sanitize_textarea_field( $_POST['aj_objeto_atendimento'] );
+    }
+    if ( isset( $_POST['aj_observacoes_atendimento'] ) ) {
         $data['observacoes_atendimento'] = wp_kses_post( $_POST['aj_observacoes_atendimento'] );
     }
-
-    if ( empty( $data ) ) {
+    if ( empty( $data ) ) { // Se nenhum dado foi coletado, não faz nada
         return;
     }
 

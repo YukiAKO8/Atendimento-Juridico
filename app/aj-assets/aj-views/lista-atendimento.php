@@ -115,11 +115,10 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
             <tr>
-                <th scope="col" id="id" class="manage-column column-id">ID</th>
-                <th scope="col" id="assunto" class="manage-column column-assunto">Assunto do atendimento</th>
-                <th scope="col" id="protocolo" class="manage-column column-protocolo">Protocolo</th>
-                <th scope="col" id="advogado" class="manage-column column-advogado">Advogado</th>
                 <th scope="col" id="socio" class="manage-column column-socio">Sócio</th>
+                <th scope="col" id="assunto" class="manage-column column-assunto">Assunto do atendimento</th>
+                <th scope="col" id="advogado" class="manage-column column-advogado">Advogado</th>
+                <th scope="col" id="protocolo" class="manage-column column-protocolo">Protocolo</th>
                 <th scope="col" id="data" class="manage-column column-data">Data e Hora</th>
                 <th scope="col" id="status" class="manage-column column-status">Status</th>
                 <th scope="col" id="actions" class="manage-column column-actions">Ações</th>
@@ -135,13 +134,12 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                         $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento->id ], admin_url('admin.php') );
                     ?>
                     <tr class="aj-card-row">
-                        <td class="id column-id" data-label="ID"><?php echo is_object( $atendimento ) ? esc_html( $atendimento->id ) : ''; ?></td>
+                        <td class="socio column-socio" data-label="Sócio"><?php echo esc_html( $atendimento->socios ?? '' ); ?></td> <!-- Mantido -->
                         <td class="assunto column-assunto" data-label="Assunto">
-                            <strong><a class="row-title" href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $atendimento->assunto ); ?></a></strong>
+                            <strong><a class="row-title" href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $atendimento->assunto ?? '' ); ?></a></strong>
                         </td>
-                        <td class="protocolo column-protocolo" data-label="Protocolo"><?php echo esc_html( $atendimento->protocolo ); ?></td>
-                        <td class="advogado column-advogado" data-label="Advogado"><?php echo esc_html( $atendimento->advogados ); ?></td>
-                        <td class="socio column-socio" data-label="Sócio"><?php echo esc_html( $atendimento->socios ); ?></td>
+                        <td class="advogado column-advogado" data-label="Advogado"><?php echo esc_html( $atendimento->advogados ?? '' ); ?></td> <!-- Mantido -->
+                        <td class="protocolo column-protocolo" data-label="Protocolo"><?php echo esc_html( $atendimento->protocolo ?? '' ); ?></td> <!-- Mantido -->
                         <td class="data column-data" data-label="Data"><?php echo esc_html( date( 'd/m/Y H:i', strtotime( $atendimento->data_atendimento ) ) ); ?></td>
                         <td class="status column-status" data-label="Status">
                             <?php
@@ -165,11 +163,10 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                                                     <li><a href="#"><span class="dashicons dashicons-text-page"></span> Comprovante</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-whatsapp"></span> Enviar Via Whatsapp</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-admin-users"></span> Procuração</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-businessman"></span> Procuração Advogado</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-money-alt"></span> Contratos Honorarios</a></li>
                                                     <li><a href="#"><span class="dashicons dashicons-text-page"></span> Declaração Pobreza</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-admin-home"></span> Declaração Residencia</a></li>
-                                                    <li><a href="#"><span class="dashicons dashicons-groups"></span> Acordo Extrajudicial</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-admin-home"></span> Contrato AJI Trab.</a></li>
+                                                    <li><a href="#"><span class="dashicons dashicons-groups"></span> Contrato AJI Prev.</a></li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -191,7 +188,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                 <?php endforeach; ?>
             <?php else : ?>
                 <tr class="no-items">
-                    <td class="colspanchange" colspan="8">Nenhum atendimento encontrado.</td>
+                    <td class="colspanchange" colspan="7">Nenhum atendimento encontrado.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
@@ -231,6 +228,16 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
     </div>
 
     <!-- Estilos para o Modal de Ajuda -->
+    <style>
+        .aj-list-footer {
+            margin-bottom: 50px; /* Ajuste este valor conforme necessário */
+            display: flex; /* Mantém os itens na mesma linha */
+            justify-content: flex-start; /* Alinha os itens à esquerda */
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+    </style>
     <style>
         .aj-modal-overlay {
             position: fixed; /* Posiciona o modal em relação à janela do navegador */

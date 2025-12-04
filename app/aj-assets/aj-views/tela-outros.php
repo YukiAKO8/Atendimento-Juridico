@@ -5,17 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-$sumula_atendimento = isset( $atendimento->sumula_atendimento ) ? $atendimento->sumula_atendimento : '';
+
 $objeto_atendimento = isset( $atendimento->objeto_atendimento ) ? $atendimento->objeto_atendimento : '';
 $observacoes_atendimento = isset( $atendimento->observacoes_atendimento ) ? $atendimento->observacoes_atendimento : '';
 ?>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label for="aj_sumula_atendimento">Súmula do atendimento</label>
-            <textarea id="aj_sumula_atendimento" name="aj_sumula_atendimento" rows="6" <?php echo $is_readonly ? 'disabled' : ''; ?>><?php echo esc_textarea( $sumula_atendimento ); ?></textarea>
-        </div>
-    </div>
+
 
     <div class="form-row">
         <div class="form-group">

@@ -28,10 +28,9 @@ $atendimentos_historico = array_filter($atendimentos_historico, function($item) 
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
             <tr>
-                <th scope="col" class="manage-column column-id">ID</th>
                 <th scope="col" class="manage-column column-assunto">Assunto do atendimento</th>
-                <th scope="col" class="manage-column column-protocolo">Protocolo</th>
                 <th scope="col" class="manage-column column-advogado">Advogado</th>
+                <th scope="col" class="manage-column column-protocolo">Protocolo</th>
                 <th scope="col" class="manage-column column-data">Data e Hora</th>
                 <th scope="col" class="manage-column column-status">Status</th>
                 <th scope="col" class="manage-column column-actions">Ações</th>
@@ -45,12 +44,11 @@ $atendimentos_historico = array_filter($atendimentos_historico, function($item) 
                     $view_url = add_query_arg( [ 'page' => 'atendimento-juridico', 'action' => 'view', 'id' => $atendimento_hist->id ], admin_url('admin.php') );
                 ?>
                 <tr>
-                    <td class="id column-id" data-label="ID"><?php echo esc_html( $atendimento_hist->id ); ?></td>
                     <td class="assunto column-assunto" data-label="Assunto">
                         <strong><a class="row-title" href="<?php echo esc_url( $edit_url ); ?>"><?php echo esc_html( $atendimento_hist->assunto ); ?></a></strong>
                     </td>
-                    <td class="protocolo column-protocolo" data-label="Protocolo"><?php echo esc_html( $atendimento_hist->protocolo ); ?></td>
                     <td class="advogado column-advogado" data-label="Advogado"><?php echo esc_html( $atendimento_hist->advogados ); ?></td>
+                    <td class="protocolo column-protocolo" data-label="Protocolo"><?php echo esc_html( $atendimento_hist->protocolo ); ?></td>
                     <td class="data column-data" data-label="Data"><?php echo esc_html( date( 'd/m/Y H:i', strtotime( $atendimento_hist->data_atendimento ) ) ); ?></td>
                     <td class="status column-status" data-label="Status">
                         <?php
@@ -60,14 +58,23 @@ $atendimentos_historico = array_filter($atendimentos_historico, function($item) 
                         ?>
                     </td>
                     <td class="actions column-actions" data-label="Ações">
-                         <div class="aj-actions-container">
-                            <a href="<?php echo esc_url( $edit_url ); ?>" title="Editar"><span class="dashicons dashicons-edit"></span></a>
-                            <a href="<?php echo esc_url( $view_url ); ?>" class="aj-action-view" title="Visualizar"><span class="dashicons dashicons-visibility"></span></a>
+                        <div class="aj-actions-container">
+                            <a href="<?php echo esc_url( $edit_url ); ?>" title="Editar" target="_blank"><span class="dashicons dashicons-edit"></span></a>
+                            <a href="#" class="aj-action-view" title="Visualizar" data-atendimento-id="<?php echo esc_attr( $atendimento_hist->id ); ?>"><span class="dashicons dashicons-visibility"></span></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="aj-observacoes-row" style="display: none;">
+                    <td colspan="6">
+                        <div class="aj-observacoes-content">
+                            <strong>Observações:</strong>
+                            <p><?php echo esc_html( $atendimento_hist->observacoes_atendimento ); ?></p>
                         </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
+
 
     </table>
 <?php else : ?>
@@ -75,3 +82,27 @@ $atendimentos_historico = array_filter($atendimentos_historico, function($item) 
         <p>Não há outros atendimentos registrados para este sócio.</p>
     </div>
 <?php endif; ?>
+
+<script>
+jQuery(document).ready(function($) {
+   
+    $('#the-list-historico').on('click', '.aj-action-view', function(e) {
+        e.preventDefault(); 
+
+        const $currentRow = $(this).closest('tr');
+        const $observacoesRow = $currentRow.next('.aj-observacoes-row');
+
+
+        const isCurrentlyVisible = $observacoesRow.is(':visible');
+
+      
+        $('.aj-observacoes-row').not($observacoesRow).slideUp(200);
+
+        if (!isCurrentlyVisible) {
+            $observacoesRow.slideDown(200);
+        }
+    });
+
+    $('#the-list-historico tr').css('page-break-inside', 'avoid');
+});
+</script>
