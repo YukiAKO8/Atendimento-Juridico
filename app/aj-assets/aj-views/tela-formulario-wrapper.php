@@ -26,6 +26,11 @@ $socio_nome = isset( $atendimento->socios ) ? esc_attr( $atendimento->socios ) :
 
         <form id="aj-main-form" method="post">
             <?php wp_nonce_field( 'aj_salvar_atendimento', 'aj_atendimento_nonce' ); ?>
+            
+            <?php if ( $atendimento_id > 0 ) : ?>
+                <!-- Campo oculto para enviar o ID do atendimento ao editar -->
+                <input type="hidden" name="atendimento_id" value="<?php echo esc_attr( $atendimento_id ); ?>">
+            <?php endif; ?>
 
             <nav class="aj-nav-tab-wrapper">
                 <?php

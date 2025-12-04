@@ -250,7 +250,6 @@ function aj_processar_formulario() {
         $data['forma_atendimento'] = sanitize_text_field( $_POST['aj_forma_atendimento'] );
         $data['status']            = sanitize_text_field( $_POST['aj_status'] );
         $data['assunto']           = sanitize_textarea_field( $_POST['aj_assunto'] );
-        $data['protocolo']         = sanitize_text_field( $_POST['aj_protocolo'] );
         $data['entrada_processo']  = isset( $_POST['aj_entrada_processo'] ) ? 1 : 0;
 
         $data_atendimento = sanitize_text_field( $_POST['aj_data_atendimento'] );
@@ -278,7 +277,26 @@ function aj_processar_formulario() {
     }
 
     if ( $atendimento_id > 0 ) {
+        // Validação do lado do servidor: Observação obrigatória ao mudar status
+        $original_atendimento = aj_get_atendimento_by_id( $atendimento_id );
+        $novo_status = isset($data['status']) ? $data['status'] : $original_atendimento->status;
+
+        if ( $original_atendimento && $original_atendimento->status !== $novo_status ) {
+            // Pega o conteúdo das observações, mesmo que não tenha sido alterado nesta submissão
+            $observacoes = isset($data['observacoes_atendimento']) ? $data['observacoes_atendimento'] : $original_atendimento->observacoes_atendimento;
+
+            // Verifica se as observações estão vazias (removendo tags HTML e espaços)
+            if ( empty( trim( strip_tags( $observacoes ) ) ) ) {
+                add_action( 'admin_notices', function() {
+                    echo '<div class="notice notice-error is-dismissible"><p><strong>Erro:</strong> Ao alterar o status do atendimento, é obrigatório preencher o campo "Observações do atendimento". O atendimento não foi salvo.</p></div>';
+                } );
+                // Impede que o salvamento continue
+                return;
+            }
+        }
+
         $data['alterado_por'] = get_current_user_id();
+        $data['data_alteracao'] = current_time( 'mysql' );
         $result               = aj_update_atendimento( $atendimento_id, $data );
     } else {
         $data['cadastrado_por'] = get_current_user_id();

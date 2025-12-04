@@ -101,6 +101,20 @@ jQuery(document).ready(function($) {
         const $row = $button.closest('.aj-card-row');
         const $dropdown = $button.next('.aj-actions-dropdown');
 
+        // --- Lógica para abrir o submenu para cima ---
+        // Verifica se o menu está perto do final da viewport
+        const windowHeight = $(window).height();
+        const dropdownTop = $button.get(0).getBoundingClientRect().top;
+        const spaceBelow = windowHeight - dropdownTop;
+
+        // Se houver menos de 300px abaixo, abre para cima.
+        // O valor 300px é uma estimativa da altura do menu + submenu.
+        if (spaceBelow < 300) {
+            $dropdown.addClass('aj-open-upward');
+        } else {
+            $dropdown.removeClass('aj-open-upward');
+        }
+
         // Fecha outros menus e remove a classe das outras linhas
         $('.aj-actions-dropdown').not($dropdown).hide();
         $('.aj-card-row').removeClass('actions-menu-open');
@@ -127,6 +141,28 @@ jQuery(document).ready(function($) {
             $('#aj_socios_suggestions').hide();
         }
     });
+
+    // --- Lógica para Criar Evento no Google Calendar ---
+    $(document).on('click', '.aj-action-create-event', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const $row = $(this).closest('tr');
+
+        // Coleta dados da linha para o título do evento
+        const assunto = $row.find('.column-assunto .row-title').text().trim();
+        const socio = $row.find('.column-socio').text().trim();
+
+        // Monta o título do evento
+        let eventTitle = "Atendimento";
+        if (assunto) eventTitle += `: ${assunto}`;
+        if (socio) eventTitle += ` - ${socio}`;
+
+        // Monta a URL do Google Calendar e abre em uma nova aba
+        const googleCalendarUrl = `https://calendar.google.com/calendar/u/0/r/eventedit?text=${encodeURIComponent(eventTitle)}`;
+        window.open(googleCalendarUrl, '_blank');
+    });
+
 
     // --- Lógica para Excluir Atendimento ---
     $(document).on('click', '.aj-action-delete', function(e) {
@@ -249,6 +285,38 @@ jQuery(document).ready(function($) {
         if ($('.notice-success').length && localStorage.getItem(storageKey)) {
             localStorage.removeItem(storageKey);
         }
+    }
+
+    // --- LÓGICA PARA OBRIGAR OBSERVAÇÃO AO MUDAR STATUS ---
+    const $mainForm = $('#aj-main-form');
+    const atendimentoId = new URLSearchParams(window.location.search).get('id');
+
+    // Só executa em páginas de edição de um atendimento existente
+    if ($mainForm.length && atendimentoId) {
+        const initialStatus = $('#aj_status').val();
+
+        $mainForm.on('submit', function(e) {
+            const currentStatus = $('#aj_status').val();
+
+            // Verifica se o status foi alterado
+            if (currentStatus !== initialStatus) {
+                let observacoesContent = '';
+                // Verifica se o editor TinyMCE está ativo para o campo
+                if (typeof tinymce !== 'undefined' && tinymce.get('aj_observacoes_atendimento')) {
+                    observacoesContent = tinymce.get('aj_observacoes_atendimento').getContent({ format: 'text' }).trim();
+                } else {
+                    observacoesContent = $('#aj_observacoes_atendimento').val().trim();
+                }
+
+                // Se o conteúdo das observações estiver vazio, impede o envio
+                if (observacoesContent === '') {
+                    e.preventDefault(); // Bloqueia o envio do formulário
+                    alert('Ao alterar o status do atendimento, é obrigatório preencher o campo "Observações do atendimento".');
+                    // Opcional: focar na aba e no editor
+                    $('.nav-tab[data-tab="observacoes"]').trigger('click');
+                }
+            }
+        });
     }
 
     // --- LÓGICA PARA GERAR RELATÓRIO ---
@@ -449,7 +517,7 @@ jQuery(document).ready(function($) {
                                 <button type="button" class="aj-actions-button dashicons dashicons-ellipsis" title="Ações"></button>
                                 <div class="aj-actions-dropdown" style="display: none;">
                                     <ul>
-                                        <li><a href="#"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
+                                        <li><a href="#" class="aj-action-create-event"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
                                         <li><a href="#"><span class="dashicons dashicons-redo"></span> Converter em processo</a></li>
                                         <li class="aj-submenu-container">
                                             <a href="#"><span class="dashicons dashicons-portfolio"></span> Documentos <span class="dashicons dashicons-arrow-left-alt2"></span></a>

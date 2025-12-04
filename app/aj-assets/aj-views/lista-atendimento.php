@@ -153,7 +153,7 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
                                 <button type="button" class="aj-actions-button dashicons dashicons-ellipsis" title="Ações"></button>
                                 <div class="aj-actions-dropdown" style="display: none;">
                                     <ul>
-                                        <li><a href="#"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
+                                        <li><a href="#" class="aj-action-create-event"><span class="dashicons dashicons-calendar-alt"></span> Criar evento</a></li>
                                         <li><a href="#"><span class="dashicons dashicons-redo"></span> Converter em processo</a></li>
                                         <li class="aj-submenu-container">
                                             <a href="#"><span class="dashicons dashicons-portfolio"></span> Documentos <span class="dashicons dashicons-arrow-left-alt2"></span></a>
@@ -236,6 +236,25 @@ $adv_data_fim     = isset( $_GET['adv_data_fim'] ) ? sanitize_text_field( $_GET[
             align-items: center;
             padding-top: 20px;
             border-top: 1px solid #e5e5e5;
+        }
+        .aj-actions-container {
+            position: relative; /* Essencial para o posicionamento do dropdown */
+        }
+        .aj-actions-dropdown {
+            position: absolute;
+            right: 100%; /* Posiciona o menu à esquerda do botão */
+            top: 0;
+            z-index: 1050; /* Z-index alto para sobrepor os botões flutuantes (FABs) */
+            margin-right: 5px; /* Pequeno espaço entre o botão e o menu */
+        }
+        .aj-actions-submenu {
+            z-index: 1051; /* Z-index ainda maior para sobrepor o menu pai */
+        }
+        /* Estilo para abrir o submenu para cima */
+        .aj-open-upward .aj-submenu-container .aj-actions-submenu {
+            bottom: 100%; /* Posiciona o submenu acima do item pai */
+            top: auto;
+            margin-bottom: -1px; /* Ajuste fino para alinhar com a borda */
         }
     </style>
     <style>

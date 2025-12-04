@@ -59,7 +59,7 @@ $atendimentos_historico = array_filter($atendimentos_historico, function($item) 
                     </td>
                     <td class="actions column-actions" data-label="Ações">
                         <div class="aj-actions-container">
-                            <a href="<?php echo esc_url( $edit_url ); ?>" title="Editar" target="_blank"><span class="dashicons dashicons-edit"></span></a>
+                            <a href="<?php echo esc_url( $edit_url ); ?>" title="Editar"><span class="dashicons dashicons-edit"></span></a>
                             <a href="#" class="aj-action-view" title="Visualizar" data-atendimento-id="<?php echo esc_attr( $atendimento_hist->id ); ?>"><span class="dashicons dashicons-visibility"></span></a>
                         </div>
                     </td>
