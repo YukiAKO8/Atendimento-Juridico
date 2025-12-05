@@ -287,6 +287,75 @@ jQuery(document).ready(function($) {
         }
     }
 
+    // --- INÍCIO: FERRAMENTAS DE VOZ (DITADO E LEITURA) ---
+    const speechSynthesis = window.speechSynthesis;
+
+    // Só executa se o navegador suportar alguma das APIs e o editor existir
+    if (speechSynthesis && $('#tab-content-observacoes').length) {
+
+        // Cria e insere o contêiner para os botões de voz
+        const $voiceToolsContainer = $(`
+            <div class="aj-voice-tools-container">
+                ${speechSynthesis ? `
+                <button type="button" id="aj-speak-button" class="button" title="Ler observações em voz alta">
+                    <span class="dashicons dashicons-controls-volumeon"></span>
+                    <span class="aj-speak-text">Ouvir</span>
+                </button>` : ''}
+            </div>
+        `);
+        $('#wp-aj_observacoes_atendimento-wrap').before($voiceToolsContainer);
+
+        // --- LÓGICA DA LEITURA (TEXT-TO-SPEECH) ---
+        let voices = [];
+        let ptBrVoice = null;
+
+        // Função para carregar as vozes e selecionar a melhor opção em Português
+        function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            // Prioriza a voz do Google, que geralmente é mais fluida.
+            ptBrVoice = voices.find(voice => voice.name === 'Google português do Brasil') || 
+                        voices.find(voice => voice.lang === 'pt-BR');
+        }
+
+        loadVoices();
+        speechSynthesis.onvoiceschanged = loadVoices;
+
+        $('#aj-speak-button').on('click', function() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel(); // Para a leitura
+                return;
+            }
+
+            const textToSpeak = tinymce.get('aj_observacoes_atendimento').getContent({ format: 'text' });
+            if (!textToSpeak.trim()) {
+                alert('Não há texto nas observações para ler.');
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            // Se uma voz de alta qualidade foi encontrada, usa ela.
+            if (ptBrVoice) {
+                utterance.voice = ptBrVoice;
+            }
+            utterance.lang = 'pt-BR';
+            utterance.pitch = 1; // Tom da voz (1 é o padrão)
+            utterance.rate = 1.1; // Um pouco mais rápido que o padrão para maior fluidez
+
+            utterance.onstart = () => { $('#aj-speak-button').addClass('aj-speaking').find('.aj-speak-text').text('Parar'); };
+            utterance.onend = () => { $('#aj-speak-button').removeClass('aj-speaking').find('.aj-speak-text').text('Ouvir'); };
+            
+            speechSynthesis.speak(utterance);
+        });
+
+        // Adiciona um listener para parar a fala ao sair/recarregar a página
+        $(window).on('beforeunload', function() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        });
+    }
+    // --- FIM: FERRAMENTAS DE VOZ ---
+
     // --- LÓGICA PARA OBRIGAR OBSERVAÇÃO AO MUDAR STATUS ---
     const $mainForm = $('#aj-main-form');
     const atendimentoId = new URLSearchParams(window.location.search).get('id');

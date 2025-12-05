@@ -105,6 +105,34 @@ $socio_nome = isset( $atendimento->socios ) ? esc_attr( $atendimento->socios ) :
     </div>
 </div>
 
+<style>
+    .aj-voice-tools-container {
+        margin-bottom: 10px;
+        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+    #aj-speak-button {
+        transition: all 0.3s ease;
+        background-color: #f0f0f1;
+    }
+    #aj-speak-button .dashicons {
+        vertical-align: middle;
+        margin-top: -2px;
+    }
+    #aj-speak-button.aj-speaking {
+        background-color: #337ab7; /* Azul */
+        color: white;
+        border-color: #2e6da4;
+    }
+    @keyframes aj-pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+</style>
+
 <script>
 jQuery(document).ready(function($) {
     // Ao clicar no botão "Relatório do Sócio"
