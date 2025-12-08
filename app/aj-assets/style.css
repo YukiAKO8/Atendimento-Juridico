@@ -1240,8 +1240,8 @@ max-width: 190px;
     box-sizing: border-box; /* Garante que o padding e a borda não aumentem a largura */
     border-radius: 4px; /* Arredonda todos os cantos */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adiciona sombra para efeito de sobreposição */
-    max-height: 200px;
-    min-height: 40px; /* Garante que a caixa seja visível mesmo vazia */
+    max-height: 400px;
+    min-height: 200px; /* Garante que a caixa seja visível mesmo vazia */
     padding: 5px 0; /* Adiciona um espaçamento vertical interno */
     overflow-y: auto;
 }
@@ -1261,7 +1261,7 @@ max-width: 190px;
 .aj-socio-search-button {
     position: absolute;
     right: 1px;
-    top: 25px; /* Ajustado para alinhar com o input (considerando a label) */
+    top: 22px; /* Ajustado para alinhar com o input (considerando a label) */
     height: 34px; /* Altura igual ao input (38px) - bordas (2px) */
     width: 37px;
     border: none;

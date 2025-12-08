@@ -4,7 +4,7 @@
  * Plugin URI:        https://example.com/
  * Description:       Plugin para gerenciar atendimentos jurídicos.
  * Version:           1.0.0
- * Author:            Seu Nome
+ * Author:            Yuki
  * Author URI:        https://example.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -120,5 +120,15 @@ function aj_atendimento_juridico_enqueue_admin_assets($hook) {
             'search_nonce' => wp_create_nonce( 'aj_buscar_nonce' )
         ]
     );
+        wp_localize_script(
+        'aj-atendimento-juridico-main-script',
+        'AerApiSettings',
+        array(
+            'root' => esc_url_raw(rest_url()),
+            'endpoint' => 'aer-api',
+            'nonce' => wp_create_nonce('wp_rest'),
+        )
+    );
 }
 add_action( 'admin_enqueue_scripts', 'aj_atendimento_juridico_enqueue_admin_assets' );
+

@@ -23,9 +23,63 @@ jQuery(document).ready(function($) {
         $(document).on('click', '.aj-socio-search-button', function(e) {
             e.stopPropagation(); // Impede que o clique se propague para o document
             $box.toggle();
+            alert('Cliquei na lupa');
+            const fullUrl = AerApiSettings.root + AerApiSettings.endpoint + '/associado';
+    // Opcional: Mostrar um loader e desabilitar o botão
+
+    const payload = {
+        chave: 'nome',
+        valor: jQuery('#aj_socios').val()
+    }
+    // 2. Requisição usando a API Fetch moderna
+    fetch(fullUrl, {
+        method: 'POST',
+        headers: {
+            'X-WP-Nonce': AerApiSettings.nonce,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Erro na API: Status ' + response.status);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            associados = JSON.parse(data.data)
+alert ("aqui")   
+   associados.forEach(socio => {
+        const div = document.createElement("div");
+        div.className = "socio";
+        div.textContent = socio.nome; 
+div.onclick = () => selecionarAssociadoAddAtendimentoJuridico(socio.id, socio.nome);
+              jQuery("#aj_socios_suggestions").append(div);
+
+    });
+
+        })
+        .catch(error => {
+            console.error(':x_vermelho: Erro na requisição AJAX:', error);
+        })
+        .finally(() => {
+
         });
 
 
+      
+
+    });
+   function selecionarAssociadoAddAtendimentoJuridico(id, nome) {
+console.log('Clicou no sócio', id);
+
+
+jQuery ("#aj-pesquisar-socio-inicial").hide();
+jQuery("#aj-socio-selecionado").show();
+jQuery("#aj-resultado-socio-selecionado").val(nome);
+   }
         // Filtra a lista enquanto o usuário digita
         $input.on('input', function() {
             const val = $(this).val().toLowerCase();
